@@ -1,0 +1,103 @@
+﻿<script type="text/x-template" id="timer-component">
+    <div>
+        <div class="timer-grid" v-if="show">
+            <div class="timer-sort">
+                <div style="width:100px">
+                    <span v-on:click="toggleSort('solar_system')" v-bind:class="{ focused: isSortProp('solar_system') }">
+                        System
+                        <i class="fa fa-sort-up" v-if="showSortIcon('solar_system', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('solar_system', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:125px">
+                    <span v-on:click="toggleSort('timer_type_name')" v-bind:class="{ focused: isSortProp('timer_type_name') }">
+                        Timer
+                        <i class="fa fa-sort-up" v-if="showSortIcon('timer_type_name', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('timer_type_name', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:100px">
+                    <span v-on:click="toggleSort('structure_type')" v-bind:class="{ focused: isSortProp('structure_type') }">
+                        Type
+                        <i class="fa fa-sort-up" v-if="showSortIcon('structure_type', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('structure_type', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:150px">
+                    <span v-on:click="toggleSort('timer_datetime')" v-bind:class="{ focused: isSortProp('timer_datetime') }">
+                        Timer (UTC)
+                        <i class="fa fa-sort-up" v-if="showSortIcon('timer_datetime', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('timer_datetime', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:150px">
+                    <span style="cursor: default;">
+                        Timer Left
+                    </span>
+                </div>
+                <div style="width:150px">
+                    <span v-on:click="toggleSort('fleet_commander')" v-bind:class="{ focused: isSortProp('fleet_commander') }">
+                        Lead FC
+                        <i class="fa fa-sort-up" v-if="showSortIcon('fleet_commander', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('fleet_commander', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:250px">
+                    <span style="cursor:default;">
+                        Structure / Comments
+                    </span>
+                </div>
+                <div style="width:125px">
+                    <span v-on:click="toggleSort('created_by')" v-bind:class="{ focused: isSortProp('created_by') }">
+                        Created By
+                        <i class="fa fa-sort-up" v-if="showSortIcon('created_by', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('created_by', 'desc')"></i>
+                    </span>
+                </div>
+                <div width="75px">
+                    <span style="cursor:default;">
+                        Action
+                    </span>
+                </div>
+            </div>
+            <div v-for="(timer, index) in timers" class="timer-detail" v-bind:class="{ blue: timer.HostilityTypeID == 2, yellow: timer.TimerTypeID == 8 }" :key="now + '-' + index" v-show="showTimer(timer.timer_datetime, index)">
+                <div style="width:100px">
+                    <a :href="'http://evemaps.dotlan.net/search?q=' + timer.solar_system" target="_blank">{{ timer.solar_system }}</a>
+                </div>
+                <div style="width:125px">
+                    {{ timer.timer_type_name }}
+                </div>
+                <div style="width:100px">
+                    {{ timer.structure_type }}
+                </div>
+                <div style="width:150px">
+                    {{ formatTimer(timer.timer_datetime) }}
+                </div>
+                <div style="width: 150px" :class="{ 'red': isRed(timer.timer_datetime) }">
+                    {{ fromNow(timer.timer_datetime) }}
+                </div>
+                <div style="width:150px">
+                    {{ timer.fleet_commander }}
+                </div>
+                <div style="width:250px">
+                    {{ ((timer.structure_name) ?? '') + (timer.comment && timer.structure_name ? ': ' : '') + (timer.comment ?? '') }}
+                </div>
+                <div style="width:130px">
+                    {{ timer.created_by }}
+                </div>
+                <div class="detail-icon" v-show="(timer.structure_name != null)" width="20px">
+                    <a :href="'../cmStructureRegistry/?s=' + encodeURIComponent(timer.structure_name)" target="_blank"><i class="fa fa-building" title="Go to Structure"></i></a>
+                </div>
+                <div class="detail-icon" v-show="type === 'recent' && add" width="50px">
+                    <i class="fa fa-plus-circle" title="Add Timer" v-on:click="addTimer(timer.id)"></i>
+                </div>
+                <div  class="detail-icon" v-show="type === 'open' && edit" width="20px">
+                    <i class="fa fa-rocket" title="Set FC" v-on:click="setFleetCommander(timer.id)"></i>
+                </div>
+                <div class="detail-icon" v-show="type === 'open' && admin" width="20px">
+                    <i class="fa fa-remove" title="Delete Timer" v-on:click="confirmDelete(timer.id)"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

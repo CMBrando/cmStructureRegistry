@@ -1,0 +1,78 @@
+﻿<script type="text/x-template" id="timer-add-component">
+    <div>
+        <div v-if="showError">
+            <div v-for="msg in errors" class="text-danger">{{ msg }}</div>
+        </div>
+        <div class="form-group">
+            <label>Timer Paste</label>
+            <input type="text" ref="timerPaste" placeholder="Paste timer text (Copy from structure detail)" style="width:350px" v-model="timerRawText" v-on:input="onTimerRawInput" />
+        </div>
+        <div class="form-group">
+            <label>Structure</label>
+            <structureregistry-picker :initStructure="structureName" :isAsync="true" :minChars="2" :enableClearOption="true" placeholder="Search Structure Registry..." v-on:item-selected="structureSelected"></structureregistry-picker>
+        </div>
+        <div class="form-group">
+            <label>System</label>
+            <system-picker v-if="showSystemLookup" ref="system" :initSystem="initSystem" :isAsync="true" :minChars="2" :enableClearOption="false" :placeholder="'Search for a System...'" v-on:item-selected="systemChanged"></system-picker>
+            <div v-if="!showSystemLookup" style="font-size:16px">{{ systemName }}</div>
+        </div>
+        <div class="form-group">
+            <label>Timer Type</label>
+            <select v-model="timerType" v-on:change="timerTypeChange">
+                <option value=""></option>
+                <option v-for="t in types" v-bind:value="t.id">
+                    {{ t.name }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Structure Type</label>
+            <select v-model="structureType">
+                <option value=""></option>
+                <option v-for="t in structureTypes" v-bind:value="t.id">
+                    {{ t.name }}
+                </option>
+            </select>
+        </div>
+        <div v-if="structureType === 18 || structureType === 19 || structureType === 20" class="form-group">
+            <label>Planet</label>
+            <select v-model="planet">
+                <option value=""></option>
+                <option v-for="p in planets" v-bind:value="p">
+                    {{ p }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Allegiance</label>
+            <select v-model="hostilityType">
+                <option v-for="t in hostilityTypes" v-bind:value="t.id">
+                    {{ t.name }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group" v-if="timerInput != 'specific'">
+            <label>Timer Input</label>
+            <select v-model="timerInput">
+                <option value="datetime">Date/Time</option>
+                <option value="countdown">CountDown</option>
+            </select>
+        </div>
+        <div class="form-group" v-if="timerInput == 'datetime' || timerInput == 'specific'">
+            <label>Date/Time UTC</label>
+            <span v-if="timerInput == 'datetime'"><date-picker ref="date"></date-picker>&nbsp;<time-picker ref="time"></time-picker> (24h)</span>
+            <span v-if="timerInput == 'specific'">{{ timerDateString }}</span>
+        </div>
+        <div class="form-group" v-if="timerInput == 'countdown'">
+            <label>Countdown</label>
+            <duration-picker ref="duration" v-once></duration-picker>
+        </div>
+        <div class="form-group">
+            <label>Comments</label>
+            <textarea v-model="comment" maxlength="1000" style="width:370px;height:100px;"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="button" value="Add Timer" v-on:click="addTimer" />
+        </div>
+    </div>
+</script>

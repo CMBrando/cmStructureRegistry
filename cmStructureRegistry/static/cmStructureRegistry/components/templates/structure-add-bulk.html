@@ -1,0 +1,22 @@
+<script id="structure-add-bulk" type="text/x-template">
+    <div style="min-height:800px">
+        <div style="display:table-cell">
+            <div>
+                <textarea placeholder="1) Go to Eve Menu -> Utilities -> Structure Browser. 2) Go to Structure Type and select all and then deleselect Station 3) Go back to Eve Menu and open a notepad. 4) Highlight about 10-15 structures at a time and drag to the notepad. Copy all from the notepad and paste into this area and hit 'Add Structures' 5) Delete text from notepad and repeat these steps." v-on:input="onPaste" style="width:500px;height:300px" v-model="text"></textarea>
+            </div>
+            <div style="margin-top: 10px">
+                <input type="button" class="button" value="Add Structures" v-on:click="addStructures" />&nbsp;<i class="fa fa-spinner fa-spin" v-show="showProcessing" style="font-size: 1.5em"></i>
+            </div>
+            <div style="margin-top: 5px">
+                <div v-if="showMessage" v-bind:class="{ 'label-danger': messageType === 'error', 'label-success': messageType === 'success' }">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+        <div style="display:table-cell; vertical-align: top; padding-left: 10px">
+            <div v-for="n in names" class="name-item">
+                {{ n }}
+            </div>
+        </div>
+    </div>
+</script>

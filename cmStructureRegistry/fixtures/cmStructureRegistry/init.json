@@ -1,0 +1,333 @@
+[
+    {
+      "model": "cmStructureRegistry.TimerType",
+      "pk": 1,
+      "fields": {
+        "name": "Armor Timer"
+      }
+    },
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 2,
+        "fields": {
+          "name": "Hull Timer"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 3,
+        "fields": {
+          "name": "Mining Op"
+        }
+    },  
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 4,
+        "fields": {
+          "name": "Move Op"
+        }
+    },  
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 5,
+        "fields": {
+          "name": "Fleet Start"
+        }
+    },  
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 6,
+        "fields": {
+          "name": "IHUB"
+        }
+    },  
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 7,
+        "fields": {
+          "name": "TCU"
+        }
+    },  
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 8,
+        "fields": {
+          "name": "UnAnchor"
+        }
+    },  
+    {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 9,
+        "fields": {
+          "name": "Anchoring"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 1,
+        "fields": {
+            "name": "Raitaru"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 2,
+        "fields": {
+            "name": "Azbel"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 3,
+        "fields": {
+            "name": "Sotiyo"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 4,
+        "fields": {
+            "name": "Astrahus"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 5,
+        "fields": {
+            "name": "Fortizar"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 6,
+        "fields": {
+            "name": "Keepstar"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 7,
+        "fields": {
+            "name": "Ansiblex"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 8,
+        "fields": {
+            "name": "Pharolux"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 9,
+        "fields": {
+            "name": "Tenebrex"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 10,
+        "fields": {
+            "name": "Athanor"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 11,
+        "fields": {
+            "name": "Tatara"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 12,
+        "fields": {
+            "name": "POS"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 13,
+        "fields": {
+            "name": "Draccous"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 14,
+        "fields": {
+            "name": "Prometheus"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 15,
+        "fields": {
+            "name": "Marginis"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 16,
+        "fields": {
+            "name": "Horizon"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 17,
+        "fields": {
+            "name": "Moreau"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 18,
+        "fields": {
+            "name": "POCO"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 19,
+        "fields": {
+            "name": "Skyhook"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 20,
+        "fields": {
+            "name": "Metenox"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerHostility",
+        "pk": 1,
+        "fields": {
+            "name": "Hostile"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerHostility",
+        "pk": 2,
+        "fields": {
+            "name": "Friendly"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35825,
+        "fields": {
+            "name": "Raitaru"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35826,
+        "fields": {
+            "name": "Azbel"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35827,
+        "fields": {
+            "name": "Sotiyo"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35832,
+        "fields": {
+            "name": "Astrahus"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35833,
+        "fields": {
+            "name": "Fortizar"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35834,
+        "fields": {
+            "name": "Keepstar"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35835,
+        "fields": {
+            "name": "Athanor"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35836,
+        "fields": {
+            "name": "Tatara"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 47513,
+        "fields": {
+            "name": "Draccous"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 47516,
+        "fields": {
+            "name": "Prometheus"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 47515,
+        "fields": {
+            "name": "Marginis"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 47514,
+        "fields": {
+            "name": "Horizon"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 47512,
+        "fields": {
+            "name": "Moreau"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35841,
+        "fields": {
+            "name": "Ansiblex"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 35840,
+        "fields": {
+            "name": "Pharolux"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.StructureType",
+        "pk": 37534,
+        "fields": {
+            "name": "Tenebrex"
+        }
+    }
+]
+
+

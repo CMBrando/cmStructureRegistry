@@ -1,0 +1,114 @@
+﻿<script type="text/x-template" id="structure-component">
+    <div>
+        <div class="structure-search">
+            <input type="text" v-on:keyup.enter.exact="loadData" class="search-text" v-model="search" v-on:submit.prevent="onSubmit" placeholder="Structure, type, system, constellation, etc. ENTER to search..." style="width: 400px;padding:5px; margin-bottom: 10px;" />&nbsp;&nbsp;<region-picker placeholder="Search Regions..." :isAsync="true" :enableClearOption="true" v-on:item-selected="regionSelected"></region-picker>&nbsp;&nbsp;&nbsp;&nbsp;<input v-if="add" type="button" value="Add Structure" v-on:click="addStructure" />
+        </div>
+        <div class="structure-grid" v-if="show">
+            <div class="structure-sort">
+                <div style="width:30px">
+                    &nbsp;
+                </div>
+                <div style="width:325px">
+                    <span v-on:click="toggleSort('structure_name')" v-bind:class="{ focused: isSortProp('structure_name') }">
+                        Structure Name
+                        <i class="fa fa-sort-up" v-if="showSortIcon('structure_name', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('structure_name', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:90px">
+                    <span v-on:click="toggleSort('structure_type')" v-bind:class="{ focused: isSortProp('structure_type') }">
+                        Type
+                        <i class="fa fa-sort-up" v-if="showSortIcon('structure_type', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('structure_type', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:100px">
+                    <span v-on:click="toggleSort('alliance')" v-bind:class="{ focused: isSortProp('alliance') }">
+                        Alliance
+                        <i class="fa fa-sort-up" v-if="showSortIcon('alliance', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('alliance', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width: 80px">
+                    <span v-on:click="toggleSort('corporation')" v-bind:class="{ focused: isSortProp('corporation') }">
+                        Corp
+                        <i class="fa fa-sort-up" v-if="showSortIcon('corporation', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('corporation', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width: 100px">
+                    <span v-on:click="toggleSort('vulnerability')" v-bind:class="{ focused: isSortProp('vulnerability') }">
+                        Window
+                        <i class="fa fa-sort-up" v-if="showSortIcon('vulnerability', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('vulnerability', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width: 125px">
+                    <span v-on:click="toggleSort('timer_type')" v-bind:class="{ focused: isSortProp('timer_type') }">
+                        Status
+                        <i class="fa fa-sort-up" v-if="showSortIcon('timer_type', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('timer_type', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width:150px">
+                    <span v-on:click="toggleSort('fit_last_updated_date')" v-bind:class="{ focused: isSortProp('fit_last_updated_date') }">
+                        Fit Updated
+                        <i class="fa fa-sort-up" v-if="showSortIcon('fit_last_updated_date', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('fit_last_updated_date', 'desc')"></i>
+                    </span>
+                </div>
+                <div style="width: 120px">
+                    <span style="cursor:default;">
+                        Action
+                    </span>
+                </div>
+            </div>
+            <div v-for="(structure, index) in structures" class="structure-detail" v-bind:class="{ alt: (index % 2 == 0) }">
+                <div style="width:30px">
+                    <i v-show="structure.fit_json == null" class="fa fa-chevron-right red detail-icon" title="No Fit"></i>
+                    <i v-show="structure.fit_json != null" class="fa detail-icon" title="Toggle Fit Display" v-bind:class="{ 'fa-chevron-right': !(structures_flag[index].val), 'fa-chevron-down': structures_flag[index].val }" style="cursor: pointer" v-on:click="toggleChild(index)"></i>
+                </div>
+                <div style="width:325px">
+                    <a :href="'http://evemaps.dotlan.net/search?q=' + structure.solar_system" target="_blank">{{ structure.structure_name }}</a>
+                </div>
+                <div style="width:90px">
+                    {{ structure.structure_type }}
+                </div>
+                <div style="width:100px">
+                    <a :href="'https://evewho.com/alliance/' + structure.alliance_id" target="_blank">{{ structure.alliance }}</a>
+                </div>
+                <div style="width:80px">
+                    <a :href="'https://evewho.com/corporation/' + structure.corporation_id" target="_blank">{{ structure.corporation }}</a>
+                </div>
+                <div style="width:100px">
+                    {{ structure.vulnerability }}
+                </div>
+                <div style="width:125px">
+                    <span v-if="structure.timer_datetime" class="st-tooltip" v-bind:class="{ 'status-tooltip': structure.timer_datetime }" :timer="structure.timer_datetime">{{ structure.timer_type }}</span>
+                    <span v-if="structure.timer_type === 'REMOVED'">{{ structure.timer_type }}</span>
+                </div>
+                <div style="width:150px">
+                    <span class="st-tooltip" v-bind:class="{ 'updated-tooltip': (structure.fit_last_updated_date !== '') }" :updated="structure.fit_last_updated_by">{{ formatDate(structure.fit_last_updated_date) }}</span>
+                </div>
+                <div class="structure-edit" style="width:130px">
+                    <i v-if="edit" class="fa fa-wrench" title="Edit Structure" v-on:click="editStructure(index)"></i>
+                    <i v-if="edit && structure.fit_last_updated_date != null" class="fa fa-edit" title="Edit Fit" v-on:click="modifyFit(index)"></i>
+                    <i v-if="edit && structure.fit_last_updated_date == null" class="fa fa-plus-square" style="margin-right:2px;" title="Add Fit" v-on:click="modifyFit(index)"></i>
+                    <i v-if="edit" class="fa fa-adjust" title="Set Window" v-on:click="modifyVuln(index)"></i>
+                    <i v-if="add_timer" class="fa fa-clock" title="Add Timer" v-on:click="addTimer(index)"></i>
+                    <i v-if="admin && structure.timer_type !== 'REMOVED'" class="fa fa-times" title="Remove Structure" v-on:click="removeStructure(index)"></i>
+                </div>
+                <div v-show="structures_flag[index].val" style="font-size:12px; margin-left: 5px; margin-top: 5px">
+                    <div v-for="(items, key) in structure.fit" style="width: 250px; display: inline-block; margin-left:5px; margin-top:5px; vertical-align: top;">
+                        <div style="display: inline;">
+                            <div style="font-weight: bold; text-transform: uppercase;">{{ key }}</div>
+                            <div v-for="type in structure.fit[key]">
+                                {{ type.name }} x{{ type.multiplier }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

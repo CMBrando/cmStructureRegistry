@@ -1,0 +1,10 @@
+﻿<script id="timer-fc-component" type="text/x-template">
+    <div>
+        <div class="form-group">
+            <input ref="fcValue" type="text" v-model="value" style="width:200px" />
+        </div>
+        <div style="margin-top:15px;">
+            <input type="button" value="Set Fleet Commander" v-on:click="setFC" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a v-on:click="cancelSet" style="cursor:pointer">Cancel</a>
+        </div>
+    </div>
+</script>

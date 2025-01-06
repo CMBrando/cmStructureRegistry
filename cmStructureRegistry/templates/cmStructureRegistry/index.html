@@ -1,0 +1,321 @@
+{% extends 'cmStructureRegistry/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load vue_tags %}
+
+{% block header_nav_brand %}
+    {% translate "Structure Registry" %}
+{% endblock %}
+
+{% block details %}
+
+{% csrf_token %} 
+{% verbatim %}
+<div class="row fBlack bgDark main-body">
+    <div id="vue-app">
+        <div v-if="showModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 900px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" v-on:click="closeModal">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <div class="modal-title">Add/Edit Structure Fit</div>
+                                </div>
+                                <div class="modal-body">
+                                    <structure-fit :structure_id="curr_structure_id" v-on:fit-modified="fitAdded" v-on:created="initModal"></structure-fit>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <div v-if="showVulnModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 400px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" v-on:click="closeModal">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <div class="modal-title">Set Vulnerability Window</div>
+                                </div>
+                                <div class="modal-body">
+                                    <structure-vulnerability :structure_id="curr_structure_id" v-on:vuln-modified="vulnModified" v-on:created="initModal"></structure-vulnerability>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <div v-if="showTimerModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 450px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" v-on:click="closeModal">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <div class="modal-title">Add Timer</div>
+                                </div>
+                                <div class="modal-body">
+                                    <timer-add-component ref="addTimer" :structure_id="curr_structure_id" v-on:timer-added="timerAdded" v-on:created="initModal"></timer-add-component>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <div v-if="showStructureRemoveModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 400px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" v-on:click="closeModal">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <div class="modal-title">Confirm Remove</div>
+                                </div>
+                                <div class="modal-body">
+                                    <structure-remove :structure_id="curr_structure_id" :structure_name="curr_structure_name" v-on:structure-canceled="closeModal" v-on:structure-removed="structureRemoved" v-on:created="initModal"></structure-remove>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <div v-if="showStructureAddModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 400px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" v-on:click="closeModal">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <div class="modal-title">{{ curr_structure_id ? 'Edit Structure' : 'Add Structure' }}</div>
+                                </div>
+                                <div class="modal-body">
+                                    <structure-add-registry v-on:created="initModal" v-on:structure-added="structureAdded" :structure_id="curr_structure_id"></structure-add-registry>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <structure-component v-on:edit-fit="loadAddFit" :admin="isAdmin" :edit="canEdit" :add="canAdd" :add_timer="canAddTimer" :refresh_key="refresh_key" v-on:edit-vulnerability="loadVuln" v-on:add-timer="loadAddTimer" v-on:remove-structure="loadRemoveStructure" v-on:add-structure="loadAddStructure" v-on:edit-structure="loadEditStructure"></structure-component>
+    </div>
+</div>
+{% endverbatim %}
+
+{% endblock %}
+
+{% block extra_css %}
+
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
+    <link rel="stylesheet" href="/static/cmStructureRegistry/css/main.css?v={{ CM_VERSION }}">
+
+{% endblock %}
+
+{% block extra_javascript %}
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.6/underscore-min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.string/3.3.5/underscore.string.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
+
+    <script type="text/javascript" src="/static/cmStructureRegistry/scripts/timeentry.min.js?v={{ CM_VERSION }}"></script>
+    <script type="text/javascript" src="/static/cmStructureRegistry/scripts/reltime.js?v={{ CM_VERSION }}"></script>
+    <script type="text/javascript" src="/static/cmStructureRegistry/scripts/countdown.min.js?v={{ CM_VERSION }}"></script>
+    <script type="text/javascript" src="/static/cmStructureRegistry/scripts/moment-countdown.min.js?v={{ CM_VERSION }}"></script>
+
+    {% autoescape off %}
+
+    {% load_template "autocomplete" %}
+    {% load_template "structure-component" %}
+    {% load_template "structure-add-registry" %}
+    {% load_template "structure-add-bulk" %}   
+    {% load_template "structure-fit" %}
+    {% load_template "structure-vulnerability" %}
+    {% load_template "structure-remove" %}                 
+    {% load_template "timer-add-component" %}   
+
+    {% endautoescape %}
+
+    <script type="module">
+
+        import { createApp } from '//unpkg.com/vue@3/dist/vue.esm-browser.prod.js';
+        import DatePicker  from '/static/cmStructureRegistry/components/vue-datepicker.js'
+        import SystemPicker from '/static/cmStructureRegistry/components/vue-systempicker.js'
+        import TimePicker from '/static/cmStructureRegistry/components/vue-timepicker.js'
+        import RegionPicker from '/static/cmStructureRegistry/components/vue-regionpicker.js'
+        import DurationPicker from '/static/cmStructureRegistry/components/vue-durationpicker.js'
+        import Countdown from '/static/cmStructureRegistry/components/vue-countdown.js'        
+        import StructureRegistryPicker from '/static/cmStructureRegistry/components/vue-structureregistrypicker.js'
+        import StructureRegistry from '/static/cmStructureRegistry/components/StructureRegistry.js'
+        import StructureRegistryAdd from '/static/cmStructureRegistry/components/StructureRegistryManual.js?v=2024-11-06'
+        import StructureBulkAdd from '/static/cmStructureRegistry/components/StructureRegistryAdd.js'        
+        import StructureFit from '/static/cmStructureRegistry/components/StructureFitAdd.js'       
+        import StructureRegistryRemove from '/static/cmStructureRegistry/components/StructureRemove.js'
+        import StructureRegistryVuln from '/static/cmStructureRegistry/components/StructureVuln.js'       
+        import TimerAdd from '/static/cmStructureRegistry/components/TimerAdd.js'
+
+        var _vue = createApp({
+            data: function () {
+                return {
+                    token: document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    header: 'X-CSRFToken',
+                    isAdmin: {{ perms.cmStructureRegistry.delete_structureregistry|yesno:"true,false" }},
+                    canAdd: {{ perms.cmStructureRegistry.add_structureregistry|yesno:"true,false" }},
+                    canEdit: {{ perms.cmStructureRegistry.change_structureregistry|yesno:"true,false" }},
+                    canAddTimer: {{ perms.cmStructureRegistry.add_corptimer|yesno:"true,false" }},
+                    showModal: false,
+                    showVulnModal: false,
+                    showTimerModal: false,
+                    showStructureRemoveModal: false,
+                    showStructureAddModal: false,
+                    curr_structure_id: null,
+                    curr_structure_name: '',
+                    curr_vuln: null,
+                    refresh_key: 0,
+                }
+            },
+            methods: {
+                loadAddFit: function (structureID) {
+                    this.curr_structure_id = structureID;
+                    this.showModal = true;
+                },
+                loadVuln: function (structureID) {
+                    this.curr_structure_id = structureID;
+                    this.showVulnModal = true;
+                },
+                loadAddTimer: function (structureID) {
+                    this.curr_structure_id = structureID;
+                    this.showTimerModal = true;
+                },
+                loadRemoveStructure: function (structureID, structureName) {
+                    this.curr_structure_id = structureID;
+                    this.curr_structure_name = structureName;
+                    this.showStructureRemoveModal = true;
+                },
+                loadAddStructure: function () {
+                    this.curr_structure_id = null;
+                    this.showStructureAddModal = true;
+                },
+                loadEditStructure: function (structureID) {
+                    this.curr_structure_id = structureID
+                    this.showStructureAddModal = true;
+                },
+                structureRemoved: function () {
+                    this.showStructureRemoveModal = false;
+                    this.refresh_key = this.refresh_key + 1;
+                },
+                structureAdded: function () {
+                    this.showStructureAddModal = false;
+                    this.refresh_key = this.refresh_key + 1;
+                },
+                closeModal: function () {
+                    this.showModal = false;
+                    this.showVulnModal = false;
+                    this.showTimerModal = false;
+                    this.showStructureRemoveModal = false;
+                    this.showStructureAddModal = false;
+                },
+                fitAdded: function () {
+                    this.showModal = false;
+                    this.refresh_key = this.refresh_key + 1;
+                },
+                vulnModified: function () {
+                    this.showVulnModal = false;
+                    this.refresh_key = this.refresh_key + 1;
+                },
+                timerAdded: function () {
+                    this.showTimerModal = false;
+                    this.refresh_key = this.refresh_key + 1;
+                },
+                initModal: function () {
+
+                    $(".modal-header").on("mousedown", function (mousedownEvt) {
+                        var $draggable = $(this);
+                        var x = mousedownEvt.pageX - $draggable.offset().left,
+                            y = mousedownEvt.pageY - $draggable.offset().top;
+                        $("body").on("mousemove.draggable", function (mousemoveEvt) {
+                            $draggable.closest(".modal-dialog").offset({
+                                "left": mousemoveEvt.pageX - x,
+                                "top": mousemoveEvt.pageY - y
+                            });
+                        });
+                        $("body").one("mouseup", function () {
+                            $("body").off("mousemove.draggable");
+                        });
+                        $draggable.closest(".modal").one("bs.modal.hide", function () {
+                            $("body").off("mousemove.draggable");
+                        });
+                    });
+
+                }
+            }
+        });
+
+        _vue.component("date-picker", DatePicker);
+        _vue.component("system-picker", SystemPicker);
+        _vue.component("region-picker", RegionPicker);
+        _vue.component("time-picker", TimePicker);
+        _vue.component("duration-picker", DurationPicker);
+        _vue.component("countdown", Countdown);
+        _vue.component("structureregistry-picker", StructureRegistryPicker);
+        _vue.component("structure-component", StructureRegistry);
+        _vue.component("structure-add-registry", StructureRegistryAdd);
+        _vue.component("structure-bulk-add", StructureBulkAdd)
+        _vue.component("structure-fit", StructureFit);
+        _vue.component("structure-remove", StructureRegistryRemove);
+        _vue.component("structure-vulnerability", StructureRegistryVuln);
+        _vue.component("timer-add-component", TimerAdd);           
+
+        _vue.mount('#vue-app');
+
+    </script>   
+
+
+{% endblock %}
+
+{% block extra_script %}
+
+    countdown.setLabels(
+        'ms|s|m|h|d|w| month| year| decade| century| millennium',
+        'ms|s|m|h|d|w| months| years| decades| centuries| millennia',
+        ' ',
+        ' ',
+        '',
+        function(n){ return n.toString(); });
+
+    toastr.options = {
+        "positionClass": "toast-bottom-center",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "4000",
+        "extendedTimeOut": "1000"
+        }    
+
+{% endblock %}
+
+
