@@ -55,14 +55,15 @@ class Migration(migrations.Migration):
                     ((`ee`.`character_id` = `fit`.`character_id`)))
                 left join (
                     select
-                        `cctv`.`timer_datetime` AS `timer_datetime`,
-                        `cctv`.`timer_type_name` AS `timer_type_name`,
-                        `cctv`.`structure_id` as `structure_id`
+                        `cct`.`timer_datetime` AS `timer_datetime`,
+                        `ctt`.`name` AS `timer_type_name`,
+                        `cct`.`structure_id` as `structure_id`
                     from
-                        `cm_corp_timer_view` `cctv`
-                    where (`cctv`.`timer_datetime` > utc_date())
+                        `cm_corp_timer` `cct`
+                    join `cm_timer_type` `ctt` on `ctt`.`id` = `cct`.`timer_type_id`
+                    where (`cct`.`timer_datetime` > utc_date())
                     order by
-                        `cctv`.`timer_datetime`
+                        `cct`.`timer_datetime`
                     limit 1) `tmr` on `csr`.`structure_id` = `tmr`.`structure_id`
                     );
             """,
