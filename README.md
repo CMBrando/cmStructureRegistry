@@ -5,8 +5,9 @@ This is a Structure Registry and Timer Board app for [Alliance Auth](https://git
 ## Features
 
 - Structure Registry with ability to paste in fit information, set windows and add timer with stucture auto-populated
-- Structure Registry will show if a timer is linked to structure and remaining time
+- Structure Registry will show if a timer is linked to structure and the remaining time
 - Timer Board with open and recent timers with ability to set Lead FC
+- Link from Timer to structure in Structure Registry if linked.
 - Automatic count up after countdown based on structure type
 - When adding Timer, one can search Structure Registry 
 - Add a Timer based on EVE reinforce text from a structure
@@ -70,31 +71,31 @@ There are two separate menu items in this plugin. One is for the Structure Regis
 Here are the features of the plugin and what permissions allow them
 
 View Structure Registry menu item and view and search Structure Registry page:
-    cmStructureRegistry.view_structureregistry
+    *cmStructureRegistry.view_structureregistry*
 
 Add or modify a structure:
-    cmStructureRegistry.add_structureregistry
+    *cmStructureRegistry.add_structureregistry*
 
 Add or change a structure fit on a structure:
-    cmStructureRegistry.change_structureregistry    
+    *cmStructureRegistry.change_structureregistry*
 
 Set structure vulnerability window:
-    cmStructureRegistry.change_structureregistry    
+    *cmStructureRegistry.change_structureregistry*
 
 Remove a structure:
-    cmStructureRegistry.delete_structureregistry    
+    *cmStructureRegistry.delete_structureregistry*
 
 View Timer menu item and Timer page:
-    cmStructureRegistry.view_corptimer
+    *cmStructureRegistry.view_corptimer*
 
 Add Timer:
-    cmStructureRegistry.add_corptimer
+    *cmStructureRegistry.add_corptimer*
 
 Set Fleet Commander:
-    cmStructureRegistry.change_corptimer
+    *cmStructureRegistry.change_corptimer*
 
 Remove Timer:
-    cmStructureRegistry.delete_corptimer
+    *cmStructureRegistry.delete_corptimer*
 
 
 
