@@ -53,19 +53,18 @@ class Migration(migrations.Migration):
                     ((`fit`.`structure_id` = `csr`.`structure_id`)))
                 left join `eveonline_evecharacter` `ee` on
                     ((`ee`.`character_id` = `fit`.`character_id`)))
-                left join lateral (
+                left join (
                     select
                         `cctv`.`timer_datetime` AS `timer_datetime`,
-                        `cctv`.`timer_type_name` AS `timer_type_name`
+                        `cctv`.`timer_type_name` AS `timer_type_name`,
+                        `cctv`.`structure_id` as `structure_id`
                     from
                         `cm_corp_timer_view` `cctv`
-                    where
-                        ((`cctv`.`structure_id` = `csr`.`structure_id`)
-                            and (`cctv`.`timer_datetime` > utc_date()))
+                    where (`cctv`.`timer_datetime` > utc_date())
                     order by
                         `cctv`.`timer_datetime`
-                    limit 1) `tmr` on
-                    (true));
+                    limit 1) `tmr` on `csr`.`structure_id` = `tmr`.`structure_id`
+                    );
             """,
             reverse_sql="DROP VIEW `cm_structure_registry_view`;"
         ),
