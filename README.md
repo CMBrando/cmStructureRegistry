@@ -24,21 +24,7 @@ pip install -e {path_to}/cmStructureRegistry
 
 First add your app to the Django project by adding 'cmStructureRegistry' to INSTALLED_APPS in `settings/local.py`.
 
-Next make migrations for the app:
-
-```bash
-python manage.py makemigrations
-```
-
-Then run a check to see if everything is setup correctly.
-
-```bash
-python manage.py check
-```
-
-In case they are errors make sure to fix them before proceeding.
-
-Next perform migrations to add your model to the database:
+Next perform migrations to add models to the database:
 
 ```bash
 python manage.py migrate
