@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                     from
                         `cm_corp_timer` `cct`
                     join `cm_timer_type` `ctt` on `ctt`.`id` = `cct`.`timer_type_id`
-                    where (`cct`.`timer_datetime` > utc_date())
+                    where (`cct`.`timer_datetime` > UTC_TIMESTAMP())
                     	) `tmr` on `tmr`.`structure_id` = `csr`.`structure_id` and `tmr`.`row_num` = 1
                     );
             """,
