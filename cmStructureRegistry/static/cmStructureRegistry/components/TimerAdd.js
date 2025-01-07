@@ -205,7 +205,7 @@
             var timerDateStr = '';
             // date was selected instead of countdown
             if (this.$refs.date && this.$refs.date.dt && this.$refs.time.time) {
-                timeDt = this.$refs.time.time;
+                var timeDt = this.$refs.time.time;
                 timerDateStr = moment.utc(this.$refs.date.dt).add(timeDt.getHours(), 'hours').add(timeDt.getMinutes(), 'minutes').toISOString();
             }
             else if (this.$refs.duration && this.$refs.duration.durationDate instanceof Date && !isNaN(this.$refs.duration.durationDate)) {

@@ -57,14 +57,13 @@ class Migration(migrations.Migration):
                     select
                         `cct`.`timer_datetime` AS `timer_datetime`,
                         `ctt`.`name` AS `timer_type_name`,
-                        `cct`.`structure_id` as `structure_id`
+                        `cct`.`structure_id`,
+                        ROW_NUMBER() OVER(PARTITION BY `cct`.`structure_id` order by `cct`.`timer_datetime`) as `row_num`
                     from
                         `cm_corp_timer` `cct`
                     join `cm_timer_type` `ctt` on `ctt`.`id` = `cct`.`timer_type_id`
                     where (`cct`.`timer_datetime` > utc_date())
-                    order by
-                        `cct`.`timer_datetime`
-                    limit 1) `tmr` on `csr`.`structure_id` = `tmr`.`structure_id`
+                    	) `tmr` on `tmr`.`structure_id` = `csr`.`structure_id` and `tmr`.`row_num` = 1
                     );
             """,
             reverse_sql="DROP VIEW `cm_structure_registry_view`;"
