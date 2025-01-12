@@ -70,13 +70,13 @@ def timers(request):
 @login_required
 @permission_required("cmStructureRegistry.view_corptimer")
 def timer_types(request):
-    items = list(TimerType.objects.all().values())
+    items = list(TimerType.objects.all().order_by('name').values())
     return JsonResponse(items, safe=False)
     
 @login_required
 @permission_required("cmStructureRegistry.view_corptimer")
 def structure_types(request):
-    items = list(TimerStructureType.objects.all().values())
+    items = list(TimerStructureType.objects.all().order_by('name').values())
     return JsonResponse(items, safe=False)
     
 @login_required
