@@ -1,4 +1,4 @@
-﻿<script type="text/x-template" id="structure-component">
+<script id="structure-component" type="text/x-template">
     <div>
         <div class="structure-search">
             <input type="text" v-on:keyup.enter.exact="loadData" class="search-text" v-model="search" v-on:submit.prevent="onSubmit" placeholder="Structure, type, system, constellation, etc. ENTER to search..." style="width: 400px;padding:5px; margin-bottom: 10px;" />&nbsp;&nbsp;<region-picker placeholder="Search Regions..." :isAsync="true" :enableClearOption="true" v-on:item-selected="regionSelected"></region-picker>&nbsp;&nbsp;&nbsp;&nbsp;<input v-if="add" type="button" value="Add Structure" v-on:click="addStructure" />

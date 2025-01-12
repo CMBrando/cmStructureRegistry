@@ -203,6 +203,13 @@
         }
     },
     {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 21,
+        "fields": {
+            "name": "Mercenary Den"
+        }
+    },    
+    {
         "model": "cmStructureRegistry.TimerHostility",
         "pk": 1,
         "fields": {

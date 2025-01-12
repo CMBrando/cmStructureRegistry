@@ -1,4 +1,8 @@
-﻿
+﻿body #vue-app {
+    color: #000;
+}
+
+
 input, select, textarea {
     outline: none;
 }
@@ -80,7 +84,8 @@ input[type='button']:focus, button:focus {
 
 .timer-sort {
     margin-left: 0;
-    margin-bottom: 15px
+    margin-bottom: 15px;
+    margin-left: 5px;
 }
 
 .timer-sort > div {
@@ -103,6 +108,7 @@ input[type='button']:focus, button:focus {
 }
 
 .timer-detail {
+    padding-left: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
     background: #fff;

@@ -30,11 +30,20 @@
             });
         },
         onStructureNameInput: function () {
-            var name = s.clean(this.structureName);
-            if (name.slice(-1) === ')') {
-                this.structureName = name.substring(0, name.lastIndexOf(' ('));
-                this.corporationName = name.substring(name.lastIndexOf('(') + 1, name.length - 1);
-            }
+            var regex = /\[([^\]]+)\]/;
+            var match = this.structureName.match(regex);
+
+            // if match then it's a POCO structure and can set the corporation name
+            if(match) {
+                this.corporationName = match[1];
+                this.structureType = 18;  // POCO
+            }                
+
+            //var name = s.clean(this.structureName);
+            //if (name.slice(-1) === ')') {
+            //    this.structureName = name.substring(0, name.lastIndexOf(' ('));
+            //    this.corporationName = name.substring(name.lastIndexOf('(') + 1, name.length - 1);
+            //}
         },
         loadStructure: function () {
             var self = this;

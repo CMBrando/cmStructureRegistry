@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from datetime import datetime, timedelta, timezone
 import pytz
 import random
+import re
 
 from django.shortcuts import render
 from pathlib import Path
@@ -278,6 +279,11 @@ def save_structure(request):
 
             corp_result = corporation_lookup(corporation_name)
 
+            # check if there's a distance at the end and strip
+            if structure_name.endswith(' km') or structure_name.endswith(' m'):
+                lastIndex = structure_name.rfind(' ')
+                structure_name = structure_name[0: structure_name.rfind(" ", 0, lastIndex)].strip()
+
             if corp_result:
 
                 index = structure_name.find(" - ")
@@ -285,11 +291,24 @@ def save_structure(request):
                 if structure_type_id == ANSIBLEX_STRUCTURE_TYPE:
                     index = structure_name.find(" » ")
 
-                if index == -1:
-                    msgs.append("Could not identify Solar System from Structure Name")
+                solar_system_name = ""    
 
+                if index == -1:
+                    # check if legacy POCO
+                    pattern = r"\(([^)]+)\)|\[([^\]]+)\]"
+                    matches = re.findall(pattern, structure_name)
+                    results = [match[0] or match[1] for match in matches] 
+
+                    if len(results) == 2:
+                        structure_name = structure_name.replace("[" + results[1] + "]", "") # strip the corp name from the end)
+                        index = results[0].rfind(" ")
+                        solar_system_name = results[0][0:index].strip()
+                    else:
+                        msgs.append("Could not identify Solar System from Structure Name")
                 else:
                     solar_system_name = structure_name[0:index]
+
+                if solar_system_name: 
 
                     system_result = solar_system_lookup(solar_system_name)
                 
@@ -310,7 +329,7 @@ def save_structure(request):
                             new_corp.save()
                         else:
                             corp_instance = corp.first()
-                            corp_instance.alliance_id = corp_api_result['alliance_id']
+                            corp_instance.alliance_id = corp_api_result.get('alliance_id')
                             corp_instance.save()
 
                         alliance_id = corp_api_result.get('alliance_id')
@@ -327,6 +346,8 @@ def save_structure(request):
 
                     else:            
                         msgs.append("Could not identify Solar System from Structure Name")
+                else:            
+                    msgs.append("Could not identify Solar System from Structure Name")                        
                 
             else:
                 msgs.append("Could not identify corporation");
