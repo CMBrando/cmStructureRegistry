@@ -1,6 +1,13 @@
 import requests
 from django.conf import settings
 
+roman_numerals = [
+        "I", "II", "III", "IV", "V",
+        "VI", "VII", "VIII", "IX", "X",
+        "XI", "XII", "XIII", "XIV", "XV",
+        "XVI", "XVII", "XVIII", "XIX", "XX"
+    ]
+
 
 def get_system_api_info(system_id):
     baseUrl = settings.ESI_API_URL
@@ -115,4 +122,9 @@ def get_alliance_api_info(alliance_id):
     #except requests.exceptions.RequestException as e:
     #    # Handle request exceptions (connection errors, timeouts, etc.)
     #    print(f"Error fetching system data: {e}")
-    #    return url     
+    #    return url
+
+
+def get_roman_numeral(number):
+    return roman_numerals[int(number) - 1]
+

@@ -11,9 +11,9 @@ input, select, textarea {
     border: 1px solid gray;
 }
 
-    input:focus, select:focus, textarea:focus {
-        border: 1px solid #74a6bd;
-    }
+input:focus, select:focus, textarea:focus {
+    border: 1px solid #74a6bd;
+}
 
 /** legacy bootstrap styling */
 .form-group {
@@ -414,4 +414,8 @@ a {
 .st-tooltip {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.tooltip.show {
+    z-index: 10000;
 }

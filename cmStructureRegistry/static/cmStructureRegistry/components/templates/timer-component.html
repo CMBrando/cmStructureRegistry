@@ -85,7 +85,7 @@
                 <div style="width:130px">
                     {{ timer.created_by }}
                 </div>
-                <div class="detail-icon" v-show="(timer.structure_name != null)" width="20px">
+                <div class="detail-icon" v-show="(timer.structure_id != null)" width="20px">
                     <a :href="'../cmStructureRegistry/?s=' + encodeURIComponent(timer.structure_name)" target="_blank"><i class="fa fa-building" title="Go to Structure"></i></a>
                 </div>
                 <div class="detail-icon" v-show="type === 'recent' && add" width="50px">

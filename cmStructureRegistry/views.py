@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 import pytz
 import random
 import re
+import base64
 
 from django.shortcuts import render
 from pathlib import Path
@@ -40,12 +41,16 @@ from .utils import get_corporation_api_info
 from .utils import get_alliance_api_info
 from .utils import solar_system_lookup
 from .utils import corporation_lookup
+from .utils import get_roman_numeral
 from cmStructureRegistry import app_settings
 
 import logging
 import json
 
 ANSIBLEX_STRUCTURE_TYPE = 7
+POCO_STRUCTURE_TYPE = 18
+SKYHOOK_STRUCTURE_TYPE = 19
+MERC_STRUCTURE_TYPE = 21
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -266,6 +271,8 @@ def save_structure(request):
 
     success = False
     msgs = []
+    utc_now = datetime.now(timezone.utc)
+    main_character = get_main_character_from_user(user=request.user)
 
     if request.method == 'POST':
         form = StructureRegistryForm(request.POST)
@@ -276,11 +283,15 @@ def save_structure(request):
             corporation_name = form.data['corporation_name']
             structure_name = form.data['structure_name'].strip()
             structure_type_id = int(form.data['structure_type_id'])
+            fit = form.data['fit']  #base64 encoded
+            vulnerability = form.data['vulnerability']
+            system_id = form.data['system_id'] # for merc den
+            planet = form.data['planet'] # for merd den
 
             corp_result = corporation_lookup(corporation_name)
 
             # check if there's a distance at the end and strip
-            if structure_name.endswith(' km') or structure_name.endswith(' m'):
+            if structure_name.lower().endswith(' km') or structure_name.lower().endswith(' m') or structure_name.lower().endswith(' au'):
                 lastIndex = structure_name.rfind(' ')
                 structure_name = structure_name[0: structure_name.rfind(" ", 0, lastIndex)].strip()
 
@@ -293,8 +304,8 @@ def save_structure(request):
 
                 solar_system_name = ""    
 
-                if index == -1:
-                    # check if legacy POCO
+                # check for special parsing on POCO, Skyhook and Mercenary Den
+                if index == -1 and int(structure_type_id) in [POCO_STRUCTURE_TYPE, SKYHOOK_STRUCTURE_TYPE, MERC_STRUCTURE_TYPE]:
                     pattern = r"\(([^)]+)\)|\[([^\]]+)\]"
                     matches = re.findall(pattern, structure_name)
                     results = [match[0] or match[1] for match in matches] 
@@ -303,20 +314,37 @@ def save_structure(request):
                         structure_name = structure_name.replace("[" + results[1] + "]", "") # strip the corp name from the end)
                         index = results[0].rfind(" ")
                         solar_system_name = results[0][0:index].strip()
+                    elif len(results) == 1:
+                        index = results[0].rfind(" ")
+                        solar_system_name = results[0][0:index].strip()
+                    elif not structure_id and structure_type_id == MERC_STRUCTURE_TYPE:
+                        solar_system_name = None  # do nothing when adding a merc, additional logic below
                     else:
                         msgs.append("Could not identify Solar System from Structure Name")
                 else:
                     solar_system_name = structure_name[0:index]
 
-                if solar_system_name: 
+                # handle merc den if adding structure
+                if not structure_id and structure_type_id == MERC_STRUCTURE_TYPE and (not system_id or not planet):
+                    msgs.append("System and Planet are required for Mercenary Den")
+                    return JsonResponse({ 'success': success, 'messages': msgs })
+                elif not structure_id and structure_type_id == MERC_STRUCTURE_TYPE:
+                    system_result = get_system_api_info(system_id)
+                    if system_result:
+                        solar_system_name = system_result['name']
+                        planet_num = planet[-1 * (len(planet) - planet.rfind(' ')):] # planet X
+                        roman_planet = get_roman_numeral(planet_num)
+                        structure_name = f"{structure_name} ({solar_system_name} {roman_planet})"
+
+                if solar_system_name or system_id: 
 
                     system_result = solar_system_lookup(solar_system_name)
                 
                     if system_result:
                         registry = form.instance
                         registry.structure_id = structure_id if structure_id else int('9' + ''.join([str(random.randint(0, 9)) for _ in range(12)])) # if new structure generate a random id
-                        registry.structure_name = structure_name  # in case string was trimmed earlier
-                        registry.solar_system_id = system_result['id']
+                        registry.structure_name = structure_name
+                        registry.solar_system_id = system_result['id'] if system_result else system_id
                         registry.corporation_id = corp_result['id']
                         registry.removed = False
 
@@ -340,9 +368,26 @@ def save_structure(request):
                             new_alliance = Alliance(alliance_id = alliance_id, name = alliance_api_result['name'], ticker = alliance_api_result['ticker'])
                             new_alliance.save()
 
+                        if vulnerability:
+                            registry.vulnerability = vulnerability
+                            registry.vulnerability_updated = utc_now
+                            registry.vulnerability_character_id = main_character.character_id  
+
                         # save stucture at the end
                         registry.save()
-                        success = True    
+                        success = True
+
+                        # if fit passed, save as well.
+                        if fit:
+                            bytes = base64.b64decode(fit)
+                            fit_json_raw = bytes.decode("utf-8")  # Convert bytes to string
+
+                            fit_instance = StructureRegistryFit()
+                            fit_instance.structure_id = registry.structure_id
+                            fit_instance.fit_json = fit_json_raw
+                            fit_instance.modified_date = utc_now
+                            fit_instance.character_id = main_character.character_id
+                            fit_instance.save()
 
                     else:            
                         msgs.append("Could not identify Solar System from Structure Name")
@@ -351,7 +396,6 @@ def save_structure(request):
                 
             else:
                 msgs.append("Could not identify corporation");
-
         else:
 
             msgs = []

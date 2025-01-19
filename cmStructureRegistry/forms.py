@@ -30,10 +30,13 @@ class StructureRegistryForm(forms.ModelForm):
  
     structure_id = forms.IntegerField(required=False)
     corporation_name = forms.CharField(max_length=255, required=True, error_messages = { 'required': 'Corporation Name is required' })
+    fit = forms.CharField(max_length=8000, required=False)
+    system_id = forms.IntegerField(required=False)
+    planet = forms.CharField(max_length=8000, required=False)
 
     class Meta:
         model = StructureRegistry
-        fields = ['structure_name', 'structure_type_id']
+        fields = ['structure_name', 'structure_type_id', 'vulnerability']
         error_messages = {
             'structure_name': {
                 'required': 'Structure Name is required'
