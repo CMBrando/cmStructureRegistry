@@ -41,8 +41,16 @@
             this.loadStructure();
 
         this.$emit('created');
-
         this.$refs.timerPaste.focus();
+
+        var question = $(this.$el).find('.fa-circle-question')[0];
+        var tt = new bootstrap.Tooltip(question, {
+            trigger: 'hover',
+            placement: 'top',
+            title: function() {
+                return $(question).attr('title');
+            }
+        });          
     },
     methods: {
         loadTypes: function () {

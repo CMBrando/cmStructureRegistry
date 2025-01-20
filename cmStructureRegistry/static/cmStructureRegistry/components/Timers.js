@@ -153,6 +153,10 @@ export default {
             else
                 return false;
         },
+        copySystemToClipboard: function(system) {
+            navigator.clipboard.writeText(system);
+            toastr.success('System copied to clipboard')
+        },
         timerAdded: function () {
             this.loadData();
         },

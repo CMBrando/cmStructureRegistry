@@ -62,7 +62,7 @@
             </div>
             <div v-for="(timer, index) in timers" class="timer-detail" v-bind:class="{ blue: timer.HostilityTypeID == 2, yellow: timer.TimerTypeID == 8 }" :key="now + '-' + index" v-show="showTimer(timer.timer_datetime, index)">
                 <div style="width:100px">
-                    <a :href="'http://evemaps.dotlan.net/search?q=' + timer.solar_system" target="_blank">{{ timer.solar_system }}</a>
+                    <a :href="'http://evemaps.dotlan.net/search?q=' + timer.solar_system" target="_blank">{{ timer.solar_system }}</a> <i class="fa-solid fa-copy" style="margin-left:3px" title="Copy System" v-on:click="copySystemToClipboard(timer.solar_system)"></i>
                 </div>
                 <div style="width:125px">
                     {{ timer.timer_type_name }}
