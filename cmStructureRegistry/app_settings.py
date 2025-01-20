@@ -2,4 +2,4 @@
 
 from django.conf import settings
 
-CM_VERSION = "0.22"
+CM_VERSION = "0.23"

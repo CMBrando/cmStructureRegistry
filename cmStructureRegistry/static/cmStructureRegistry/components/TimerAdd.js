@@ -170,11 +170,14 @@
                     var number = match[1];
                     var index = text.indexOf(number);
 
-                    var structure = s.clean(text.substring(0, index));
-                    this.structureID = null;
-                    this.structureName = structure;
-                    this.comment = structure;
-                    this.loadStructure();
+                    // only set structure if not passed in.
+                    if(this.structureID == null) {
+                        var structure = s.clean(text.substring(0, index));
+                        this.structureID = null;
+                        this.structureName = structure;
+                        this.comment = structure;
+                        this.loadStructure();
+                    }
 
                     var dateTime = text.slice(-19);
                     var dt = moment.utc(dateTime, 'YYYY.MM.DD hh:mm:ss');
@@ -194,7 +197,7 @@
                             me.loadSolarSystem(solarSystemName);
                         }
 
-                    }, 200);
+                    }, 800);
                 }
             }
         },
