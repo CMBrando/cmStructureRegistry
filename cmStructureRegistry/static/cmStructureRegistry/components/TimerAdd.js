@@ -104,14 +104,14 @@
         },
         initTimer: function (struct) {
 
-            var me = this;
-
-            this.structureType = struct.structure_type_id;
-            this.structureName = struct.structure_name;
-            this.systemName = struct.solar_system;
-            this.systemId = struct.solar_system_id;
-            this.structureID = struct.structure_id;
-            this.showSystemLookup = false;
+            if(struct && Object.keys(struct).length > 0 ) {
+                this.structureType = struct.structure_type_id;
+                this.structureName = struct.structure_name;
+                this.systemName = struct.solar_system;
+                this.systemId = struct.solar_system_id;
+                this.structureID = struct.structure_id;
+                this.showSystemLookup = false;
+            }
         },
         resetForm: function () {
 
@@ -170,9 +170,30 @@
                     var number = match[1];
                     var index = text.indexOf(number);
 
+                    var structure = s.clean(text.substring(0, index));
+                    var solarSystemName = structure.substring(0, structure.indexOf(' - '));                    
+
+                    // check if special type
+                    var system = structure.match(/\(([^)]+)\)/)?.[1] || null;
+                    var corp = structure.match(/\[([^\]]+)\]/)?.[0] || null;  // want brackets included to replace out
+        
+                    if(!solarSystemName && system) {
+
+                        if(corp)
+                            structure = s.clean(structure.replace(corp, ""));  // clear corporation
+        
+                        if(structure.includes("Skyhook"))
+                            this.structureType = 19;
+                        else if(structure.includes("Mercenary Den"))
+                            this.structureType = 21;
+                        else if(structure.includes("Customs Office"))
+                            this.structureType = 18;  // POCO
+
+                        solarSystemName = s.clean(system.substring(0, system.lastIndexOf(' ')));
+                    }
+
                     // only set structure if not passed in.
                     if(this.structureID == null) {
-                        var structure = s.clean(text.substring(0, index));
                         this.structureID = null;
                         this.structureName = structure;
                         this.comment = structure;
@@ -188,16 +209,16 @@
                         this.timerDateString = moment.utc(this.timerDate).format("MM/DD/YYYY HH:mm:ss");                        
                     }
 
-                    var solarSystemName = this.structureName.substring(0, this.structureName.indexOf(' - '));
                     var me = this;
-
                     // wait for to check, if structure populated. if not then search for solar system
-                    setTimeout(function () {
-                        if (me.structureID == null) {
-                            me.loadSolarSystem(solarSystemName);
-                        }
+                    if(solarSystemName) {
+                        setTimeout(function () {
+                            if (me.structureID == null) {
+                                me.loadSolarSystem(solarSystemName);
+                            }
 
-                    }, 800);
+                        }, 800);
+                    }
                 }
             }
         },
