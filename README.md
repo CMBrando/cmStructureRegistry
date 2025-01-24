@@ -56,32 +56,20 @@ There are two separate menu items in this plugin. One is for the Structure Regis
 
 Here are the features of the plugin and what permissions allow them
 
-View Structure Registry menu item and view and search Structure Registry page:
-    *cmStructureRegistry.view_structureregistry*
+View Structure Registry and Timers menu items
+    *cmStructureRegistry.basic_access*
 
-Add or modify a structure:
-    *cmStructureRegistry.add_structureregistry*
-
-Add or change a structure fit on a structure:
-    *cmStructureRegistry.change_structureregistry*
-
-Set structure vulnerability window:
-    *cmStructureRegistry.change_structureregistry*
+Add, modify a structure, fit or vulnerability:
+    *cmStructureRegistry.manage_structures*
 
 Remove a structure:
-    *cmStructureRegistry.delete_structureregistry*
+    *cmStructureRegistry.delete_structure*
 
-View Timer menu item and Timer page:
-    *cmStructureRegistry.view_corptimer*
-
-Add Timer:
-    *cmStructureRegistry.add_corptimer*
-
-Set Fleet Commander:
-    *cmStructureRegistry.change_corptimer*
+Add Timer and set FCs:
+    *cmStructureRegistry.manage_timers*
 
 Remove Timer:
-    *cmStructureRegistry.delete_corptimer*
+    *cmStructureRegistry.delete_timer*
 
 
 
