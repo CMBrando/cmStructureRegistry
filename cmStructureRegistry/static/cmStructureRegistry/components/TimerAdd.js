@@ -167,7 +167,7 @@
                 const match = text.match(regex);
                 if (match) {
 
-                    var number = match[1];
+                    var number = match[0];
                     var index = text.indexOf(number);
 
                     var structure = s.clean(text.substring(0, index));
