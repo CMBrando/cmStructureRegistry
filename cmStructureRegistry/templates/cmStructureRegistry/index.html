@@ -1,7 +1,6 @@
 {% extends 'cmStructureRegistry/base.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load vue_tags %}
 
 {% block header_nav_brand %}
     {% translate "Structure Registry" %}
@@ -107,7 +106,7 @@
                                     <button type="button" class="close" v-on:click="closeModal">
                                         <i class="fa fa-times"></i>
                                     </button>
-                                    <div class="modal-title">{{ curr_structure_id ? 'Edit Structure' : 'Add Structure' }}</div>
+                                    <div class="modal-title">[[ curr_structure_id ? 'Edit Structure' : 'Add Structure' ]]</div>
                                 </div>
                                 <div class="modal-body">
                                     <structure-add-registry v-on:created="initModal" v-on:structure-added="structureAdded" :structure_id="curr_structure_id"></structure-add-registry>
@@ -150,14 +149,14 @@
 
     {% autoescape off %}
 
-    {% load_template "autocomplete" %}
-    {% load_template "structure-component" %}
-    {% load_template "structure-add-registry" %}
-    {% load_template "structure-add-bulk" %}   
-    {% load_template "structure-fit" %}
-    {% load_template "structure-vulnerability" %}
-    {% load_template "structure-remove" %}                 
-    {% load_template "timer-add-component" %}   
+    {% include 'cmStructureRegistry/vue/autocomplete.html' %}
+    {% include 'cmStructureRegistry/vue/structure-component.html' %}
+    {% include 'cmStructureRegistry/vue/structure-add-registry.html' %}
+    {% include 'cmStructureRegistry/vue/structure-add-bulk.html' %}
+    {% include 'cmStructureRegistry/vue/structure-fit.html' %}
+    {% include 'cmStructureRegistry/vue/structure-vulnerability.html' %}
+    {% include 'cmStructureRegistry/vue/structure-remove.html' %}
+    {% include 'cmStructureRegistry/vue/timer-add-component.html' %}
 
     {% endautoescape %}
 
@@ -184,10 +183,10 @@
                 return {
                     token: document.querySelector('[name=csrfmiddlewaretoken]').value,
                     header: 'X-CSRFToken',
-                    isAdmin: {{ perms.cmStructureRegistry.delete_structureregistry|yesno:"true,false" }},
-                    canAdd: {{ perms.cmStructureRegistry.add_structureregistry|yesno:"true,false" }},
-                    canEdit: {{ perms.cmStructureRegistry.change_structureregistry|yesno:"true,false" }},
-                    canAddTimer: {{ perms.cmStructureRegistry.add_corptimer|yesno:"true,false" }},
+                    isAdmin: {{ perms.cmStructureRegistry.delete_structure|yesno:"true,false" }},
+                    canAdd: {{ perms.cmStructureRegistry.manage_structures|yesno:"true,false" }},
+                    canEdit: {{ perms.cmStructureRegistry.manage_structures|yesno:"true,false" }},
+                    canAddTimer: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
                     showModal: false,
                     showVulnModal: false,
                     showTimerModal: false,
@@ -275,6 +274,8 @@
                 }
             }
         });
+
+        _vue.config.compilerOptions.delimiters = ['[[', ']]'];
 
         _vue.component("date-picker", DatePicker);
         _vue.component("system-picker", SystemPicker);

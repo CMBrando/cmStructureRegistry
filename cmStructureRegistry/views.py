@@ -7,6 +7,7 @@ import pytz
 import random
 import re
 import base64
+import json
 
 from django.shortcuts import render
 from pathlib import Path
@@ -17,7 +18,11 @@ from django.core import serializers
 from django.db.models import Q
 
 # Alliance Auth
+from allianceauth.eveonline.models import EveAllianceInfo
+from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.framework.api.user import get_main_character_from_user
+from allianceauth.services.hooks import get_extension_logger
+
 
 from .models import TimerType
 from .models import TimerStructureType
@@ -44,8 +49,6 @@ from .utils import corporation_lookup
 from .utils import get_roman_numeral
 from cmStructureRegistry import app_settings
 
-import logging
-import json
 
 ANSIBLEX_STRUCTURE_TYPE = 7
 POCO_STRUCTURE_TYPE = 18
@@ -53,10 +56,10 @@ SKYHOOK_STRUCTURE_TYPE = 19
 MERC_STRUCTURE_TYPE = 21
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = get_extension_logger(__name__)
 
 @login_required
-@permission_required("cmStructureRegistry.view_structureregistry")
+@permission_required("cmStructureRegistry.basic_access")
 def index(request):
     """Render index view."""
     context = {
@@ -65,7 +68,7 @@ def index(request):
     return render(request, "cmStructureRegistry/index.html", context)
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def timers(request):
     context = {
         'CM_VERSION': app_settings.CM_VERSION,
@@ -73,32 +76,32 @@ def timers(request):
     return render(request, "cmStructureRegistry/timers.html", context)      
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def timer_types(request):
     items = list(TimerType.objects.all().order_by('name').values())
     return JsonResponse(items, safe=False)
     
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def structure_types(request):
     items = list(TimerStructureType.objects.all().order_by('name').values())
     return JsonResponse(items, safe=False)
     
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def timer_hostility_types(request):
     items = list(TimerHostility.objects.all().values())
     return JsonResponse(items, safe=False)
    
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def search_solar_systems(request):
     query = request.GET.get('query', '')
     items = list(SolarSystem.objects.filter(name__istartswith=query).values())
     return JsonResponse(items, safe=False)
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def search_regions(request):
     query = request.GET.get('query', '')
     items = list(Region.objects.filter(name__istartswith=query).values())
@@ -106,7 +109,7 @@ def search_regions(request):
       
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def get_planets(request):
     system_id = request.GET.get('solarSystemID', '')
     system_data = get_system_api_info(system_id)
@@ -115,7 +118,7 @@ def get_planets(request):
 
 
 @login_required
-@permission_required("cmStructureRegistry.add_corptimer")
+@permission_required("cmStructureRegistry.manage_timers")
 def save_timer(request):
 
     success = False
@@ -147,27 +150,27 @@ def save_timer(request):
         
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def get_open_timers(request):
     current_time_utc = datetime.now(timezone.utc)
-    time_100_minutes_ago = current_time_utc - timedelta(minutes=100)
+    time_60_minutes_ago = current_time_utc - timedelta(minutes=60)
 
-    items = list(CorpTimerView.objects.filter(timer_datetime__gt=time_100_minutes_ago).values())
+    items = list(CorpTimerView.objects.filter(timer_datetime__gt=time_60_minutes_ago).values())
     return JsonResponse(items, safe=False)
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def get_recent_timers(request):
     current_time_utc = datetime.now(timezone.utc)
-    time_100_minutes_ago = current_time_utc - timedelta(minutes=100)
+    time_60_minutes_ago = current_time_utc - timedelta(minutes=60)
     time_14_days_ago = current_time_utc - timedelta(days=14)
 
-    items = list(CorpTimerView.objects.filter(timer_datetime__range=[time_14_days_ago, time_100_minutes_ago]).values())
+    items = list(CorpTimerView.objects.filter(timer_datetime__range=[time_14_days_ago, time_60_minutes_ago]).values())
     return JsonResponse(items, safe=False)    
 
 
 @login_required
-@permission_required("cmStructureRegistry.view_corptimer")
+@permission_required("cmStructureRegistry.basic_access")
 def get_timer(request):
     id = request.GET.get('id', '')
     items = list(CorpTimerView.objects.filter(id=id).values()) # trying to pull 1 item from django a byzantine mess. not serializable????
@@ -175,7 +178,7 @@ def get_timer(request):
 
 
 @login_required
-@permission_required("cmStructureRegistry.delete_corptimer")
+@permission_required("cmStructureRegistry.delete_timer")
 def delete_timer(request):
 
     success = False
@@ -195,7 +198,7 @@ def delete_timer(request):
   
 
 @login_required
-@permission_required("cmStructureRegistry.change_corptimer")
+@permission_required("cmStructureRegistry.manage_timers")
 def set_fleetcommander(request):
 
     success = False
@@ -224,7 +227,7 @@ def set_fleetcommander(request):
 
 
 @login_required
-@permission_required("cmStructureRegistry.view_structureregistry")
+@permission_required("cmStructureRegistry.basic_access")
 def search_registry(request):
 
     query = request.GET.get('query', '')
@@ -233,7 +236,7 @@ def search_registry(request):
 
 
 @login_required
-@permission_required("cmStructureRegistry.view_structureregistry")
+@permission_required("cmStructureRegistry.basic_access")
 def registry_read(request):
 
     term = request.GET.get('term', '')
@@ -251,7 +254,7 @@ def registry_read(request):
     return JsonResponse(items, safe=False)
           
 @login_required
-@permission_required("cmStructureRegistry.view_structureregistry")
+@permission_required("cmStructureRegistry.basic_access")
 def get_structure(request):
 
     structure_id = request.GET.get('structureID', 0)
@@ -266,7 +269,7 @@ def get_structure(request):
 
 
 @login_required
-@permission_required("cmStructureRegistry.add_structureregistry")
+@permission_required("cmStructureRegistry.manage_structures")
 def save_structure(request):
 
     success = False
@@ -322,7 +325,7 @@ def save_structure(request):
                     else:
                         msgs.append("Could not identify Solar System from Structure Name")
                 else:
-                    solar_system_name = structure_name[0:index]
+                    solar_system_name = structure_name[0:index].strip()
 
                 # handle merc den if adding structure
                 if not structure_id and structure_type_id == MERC_STRUCTURE_TYPE and (not system_id or not planet):
@@ -336,6 +339,7 @@ def save_structure(request):
                         roman_planet = get_roman_numeral(planet_num)
                         structure_name = f"{structure_name} ({solar_system_name} {roman_planet})"
 
+
                 if solar_system_name or system_id: 
 
                     system_result = solar_system_lookup(solar_system_name)
@@ -348,25 +352,32 @@ def save_structure(request):
                         registry.corporation_id = corp_result['id']
                         registry.removed = False
 
-                        # update or add corporation
+                        # update or add corporation and alliance
                         corp_api_result = get_corporation_api_info(registry.corporation_id)
 
-                        corp = Corporation.objects.filter(corporation_id=registry.corporation_id)
-                        if len(corp) == 0:
-                            new_corp = Corporation(corporation_id = registry.corporation_id, name = corp_api_result.get('name'), ticker = corp_api_result.get('ticker'), alliance_id = corp_api_result.get('alliance_id'))
-                            new_corp.save()
-                        else:
-                            corp_instance = corp.first()
-                            corp_instance.alliance_id = corp_api_result.get('alliance_id')
-                            corp_instance.save()
-
+                        eve_alliance = None
                         alliance_id = corp_api_result.get('alliance_id')
-
-                        alliance = Alliance.objects.filter(alliance_id=alliance_id)
-                        if alliance_id and len(alliance) == 0:
+                        if alliance_id:
                             alliance_api_result = get_alliance_api_info(alliance_id)
-                            new_alliance = Alliance(alliance_id = alliance_id, name = alliance_api_result['name'], ticker = alliance_api_result['ticker'])
-                            new_alliance.save()
+                            eve_alliance, created = EveAllianceInfo.objects.update_or_create(
+                            alliance_id = alliance_id,
+                            defaults = {
+                                'alliance_name': alliance_api_result.get('name'),
+                                'alliance_ticker': alliance_api_result.get('ticker'),
+                                'executor_corp_id': alliance_api_result.get('executor_corporation_id')
+                            }
+                         )
+
+                        eve_corporation, created = EveCorporationInfo.objects.update_or_create(
+                            corporation_id= registry.corporation_id,
+                            defaults = {
+                                'corporation_name': corp_api_result.get('name'),
+                                'corporation_ticker': corp_api_result.get('ticker'),
+                                'member_count': corp_api_result.get('member_count'),
+                                'ceo_id': corp_api_result.get('ceo_id'),
+                                'alliance': eve_alliance
+                            }
+                         )  
 
                         if vulnerability:
                             registry.vulnerability = vulnerability
@@ -407,7 +418,7 @@ def save_structure(request):
     
 
 @login_required
-@permission_required("cmStructureRegistry.change_structureregistry")
+@permission_required("cmStructureRegistry.manage_structures")
 def save_structure_fit(request):
 
     success = False
@@ -448,7 +459,7 @@ def save_structure_fit(request):
     
 
 @login_required
-@permission_required("cmStructureRegistry.change_structureregistry")
+@permission_required("cmStructureRegistry.manage_structures")
 def save_structure_vuln(request):
 
     success = False
@@ -477,7 +488,7 @@ def save_structure_vuln(request):
 
 
 @login_required
-@permission_required("cmStructureRegistry.delete_structureregistry")
+@permission_required("cmStructureRegistry.delete_structure")
 def delete_structure(request):
 
     success = False

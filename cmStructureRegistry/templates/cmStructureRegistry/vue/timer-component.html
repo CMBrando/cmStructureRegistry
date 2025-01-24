@@ -60,30 +60,30 @@
                     </span>
                 </div>
             </div>
-            <div v-for="(timer, index) in timers" class="timer-detail" v-bind:class="{ blue: timer.HostilityTypeID == 2, yellow: timer.TimerTypeID == 8 }" :key="now + '-' + index" v-show="showTimer(timer.timer_datetime, index)">
+            <div v-for="(timer, index) in timers" class="timer-detail" v-bind:class="{ blue: timer.hostility_type_id == 2, yellow: timer.timer_type_id == 8 }" :key="now + '-' + index">
                 <div style="width:100px">
-                    <a :href="'http://evemaps.dotlan.net/search?q=' + timer.solar_system" target="_blank">{{ timer.solar_system }}</a> <i class="fa-solid fa-copy" style="margin-left:3px" title="Copy System" v-on:click="copySystemToClipboard(timer.solar_system)"></i>
+                    <a :href="'http://evemaps.dotlan.net/search?q=' + timer.solar_system" target="_blank">[[ timer.solar_system ]]</a> <i class="fa-solid fa-copy" style="margin-left:3px" title="Copy System" v-on:click="copySystemToClipboard(timer.solar_system)"></i>
                 </div>
                 <div style="width:125px">
-                    {{ timer.timer_type_name }}
+                    [[ timer.timer_type_name ]]
                 </div>
                 <div style="width:100px">
-                    {{ timer.structure_type }}
+                    [[ timer.structure_type ]]
                 </div>
                 <div style="width:150px">
-                    {{ formatTimer(timer.timer_datetime) }}
+                    [[ formatTimer(timer.timer_datetime) ]]
                 </div>
                 <div style="width: 150px" :class="{ 'red': isRed(timer.timer_datetime) }">
-                    {{ fromNow(timer.timer_datetime) }}
+                    [[ fromNow(timer.timer_datetime) ]]
                 </div>
                 <div style="width:150px">
-                    {{ timer.fleet_commander }}
+                    [[ timer.fleet_commander ]]
                 </div>
                 <div style="width:250px">
-                    {{ ((timer.structure_name) ?? '') + (timer.comment && timer.structure_name ? ': ' : '') + (timer.comment ?? '') }}
+                    [[ ((timer.structure_name) ?? '') + (timer.comment && timer.structure_name ? ': ' : '') + (timer.comment ?? '') ]]
                 </div>
                 <div style="width:130px">
-                    {{ timer.created_by }}
+                    [[ timer.created_by ]]
                 </div>
                 <div class="detail-icon" v-show="(timer.structure_id != null)" width="20px">
                     <a :href="'../cmStructureRegistry/?s=' + encodeURIComponent(timer.structure_name)" target="_blank"><i class="fa fa-building" title="Go to Structure"></i></a>

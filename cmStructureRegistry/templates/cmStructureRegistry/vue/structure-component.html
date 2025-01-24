@@ -69,26 +69,26 @@
                     <i v-show="structure.fit_json != null" class="fa detail-icon" title="Toggle Fit Display" v-bind:class="{ 'fa-chevron-right': !(structures_flag[index].val), 'fa-chevron-down': structures_flag[index].val }" style="cursor: pointer" v-on:click="toggleChild(index)"></i>
                 </div>
                 <div style="width:325px">
-                    <a :href="'http://evemaps.dotlan.net/search?q=' + structure.solar_system" target="_blank">{{ structure.structure_name }}</a>
+                    <a :href="'http://evemaps.dotlan.net/search?q=' + structure.solar_system" target="_blank">[[ structure.structure_name ]]</a>
                 </div>
                 <div style="width:90px">
-                    {{ structure.structure_type }}
+                    [[ structure.structure_type ]]
                 </div>
                 <div style="width:100px">
-                    <a :href="'https://evewho.com/alliance/' + structure.alliance_id" target="_blank">{{ structure.alliance }}</a>
+                    <a :href="'https://evewho.com/alliance/' + structure.alliance_id" target="_blank">[[ structure.alliance ]]</a>
                 </div>
                 <div style="width:80px">
-                    <a :href="'https://evewho.com/corporation/' + structure.corporation_id" target="_blank">{{ structure.corporation }}</a>
+                    <a :href="'https://evewho.com/corporation/' + structure.corporation_id" target="_blank">[[ structure.corporation ]]</a>
                 </div>
                 <div style="width:100px">
-                    {{ structure.vulnerability }}
+                    [[ structure.vulnerability ]]
                 </div>
                 <div style="width:125px">
-                    <span v-if="structure.timer_datetime" class="st-tooltip" v-bind:class="{ 'status-tooltip': structure.timer_datetime }" :timer="structure.timer_datetime">{{ structure.timer_type }}</span>
-                    <span v-if="structure.timer_type === 'REMOVED'">{{ structure.timer_type }}</span>
+                    <span v-if="structure.timer_datetime" class="st-tooltip" v-bind:class="{ 'status-tooltip': structure.timer_datetime }" :timer="structure.timer_datetime">[[ structure.timer_type ]]</span>
+                    <span v-if="structure.timer_type === 'REMOVED'">[[ structure.timer_type ]]</span>
                 </div>
                 <div style="width:150px">
-                    <span class="st-tooltip" v-bind:class="{ 'updated-tooltip': (structure.fit_last_updated_date !== '') }" :updated="structure.fit_last_updated_by">{{ formatDate(structure.fit_last_updated_date) }}</span>
+                    <span class="st-tooltip" v-bind:class="{ 'updated-tooltip': (structure.fit_last_updated_date !== '') }" :updated="structure.fit_last_updated_by">[[ formatDate(structure.fit_last_updated_date) ]]</span>
                 </div>
                 <div class="structure-edit" style="width:130px">
                     <i v-if="edit" class="fa fa-wrench" title="Edit Structure" v-on:click="editStructure(index)"></i>
@@ -101,9 +101,9 @@
                 <div v-show="structures_flag[index].val" style="font-size:12px; margin-left: 5px; margin-top: 5px">
                     <div v-for="(items, key) in structure.fit" style="width: 250px; display: inline-block; margin-left:5px; margin-top:5px; vertical-align: top;">
                         <div style="display: inline;">
-                            <div style="font-weight: bold; text-transform: uppercase;">{{ key }}</div>
+                            <div style="font-weight: bold; text-transform: uppercase;">[[ key ]]</div>
                             <div v-for="type in structure.fit[key]">
-                                {{ type.name }} x{{ type.multiplier }}
+                                [[ type.name ]] x[[ type.multiplier ]]
                             </div>
                         </div>
                     </div>

@@ -9,13 +9,13 @@
             </div>
             <div style="margin-top: 5px">
                 <div v-if="showMessage" v-bind:class="{ 'label-danger': messageType === 'error', 'label-success': messageType === 'success' }">
-                    {{ message }}
+                    [[ message ]]
                 </div>
             </div>
         </div>
         <div style="display:table-cell; vertical-align: top; padding-left: 10px">
             <div v-for="n in names" class="name-item">
-                {{ n }}
+                [[ n ]]
             </div>
         </div>
     </div>

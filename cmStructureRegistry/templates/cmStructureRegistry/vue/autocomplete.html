@@ -6,7 +6,7 @@
                 Loading results...
             </li>
             <li v-else v-for="(result, i) in results" :key="i" v-on:click="setResult(result)" class="autocomplete-result" ref="resultInput" :class="{ 'is-active': i === arrowCounter }">
-                {{ result.name }}
+                [[ result.name ]]
             </li>
         </ul>
     </div>

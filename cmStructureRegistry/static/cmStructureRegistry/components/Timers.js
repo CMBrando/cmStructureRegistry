@@ -5,7 +5,9 @@
     MOVE: 4,
     FLEET: 5,
     IHUB: 6,
-    TCU: 7
+    TCU: 7,
+    UNANCHOR: 8,
+    ANCHORING: 9
 }
 
 const HostilityTypes = {
@@ -118,38 +120,6 @@ export default {
 
             if (this.type === 'open')
                 return moment().isAfter(moment(dateTime));
-            else
-                return false;
-        },
-        showTimer: function (dateTime, index) {
-
-            var mins = moment(dateTime).diff(moment(), 'minutes');
-
-            if (this.type === 'recent' &&
-                this.timers[index].timer_type_id !== TimerTypes.ARMOR &&
-                this.timers[index].timer_type_id !== TimerTypes.HULL &&
-                this.timers[index].timer_type_id !== TimerTypes.TCU &&
-                this.timers[index].timer_type_id !== TimerTypes.IHUB &&
-                mins <= 0)
-                return true;
-            else if (this.type === 'recent' && this.timers[index].timer_type_id === TimerTypes.ARMOR && mins <= -15)
-                return true;
-            else if (this.type === 'recent' && this.timers[index].timer_type_id === TimerTypes.HULL && mins <= -30)
-                return true;
-            else if (this.type === 'recent' && this.timers[index].timer_type_id === TimerTypes.IHUB && mins <= -100)
-                return true;
-            else if (this.type === 'recent' && this.timers[index].timer_type_id === TimerTypes.TCU && mins <= -100)
-                return true;
-            else if (this.type === 'open' && this.timers[index].timer_type_id === TimerTypes.ARMOR && mins > -15)
-                return true;
-            else if (this.type === 'open' && this.timers[index].timer_type_id === TimerTypes.HULL && mins > -30)
-                return true;
-            else if (this.type === 'open' && this.timers[index].timer_type_id === TimerTypes.IHUB && mins > -100)
-                return true;
-            else if (this.type === 'open' && this.timers[index].timer_type_id === TimerTypes.TCU && mins > -100)
-                return true;
-            else if (this.type === 'open' && mins >= 0)
-                return true;
             else
                 return false;
         },

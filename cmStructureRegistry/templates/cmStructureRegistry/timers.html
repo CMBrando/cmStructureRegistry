@@ -1,7 +1,6 @@
 {% extends 'cmStructureRegistry/base.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load vue_tags %}
 
 {% block header_nav_brand %}
     {% translate "Timers" %}
@@ -124,11 +123,13 @@
 
 
     {% autoescape off %}
-    {% load_template "autocomplete" %}
-    {% load_template "timer-add-component" %}
-    {% load_template "timer-delete-component" %}
-    {% load_template "timer-fc-component" %}
-    {% load_template "timer-component" %}
+
+    {% include 'cmStructureRegistry/vue/autocomplete.html' %}
+    {% include 'cmStructureRegistry/vue/timer-add-component.html' %}
+    {% include 'cmStructureRegistry/vue/timer-delete-component.html' %}
+    {% include 'cmStructureRegistry/vue/timer-fc-component.html' %}
+    {% include 'cmStructureRegistry/vue/timer-component.html' %}
+
     {% endautoescape %}
 
 <script type="module">
@@ -155,9 +156,9 @@
                 showFCModal: false,
                 token: document.querySelector('[name=csrfmiddlewaretoken]').value,
                 header: 'X-CSRFToken',
-                isAdmin: {{ perms.cmStructureRegistry.delete_corptimer|yesno:"true,false" }},
-                canAdd: {{ perms.cmStructureRegistry.add_corptimer|yesno:"true,false" }},
-                canEdit: {{ perms.cmStructureRegistry.change_corptimer|yesno:"true,false" }},
+                isAdmin: {{ perms.cmStructureRegistry.delete_timer|yesno:"true,false" }},
+                canAdd: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
+                canEdit: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
                 timerid: null,
                 curr_structure_id: null,
                 curr_fc: ''
@@ -236,6 +237,8 @@
             }
         }
     });
+
+    _vue.config.compilerOptions.delimiters = ['[[', ']]'];
 
     _vue.component("date-picker", DatePicker);
     _vue.component("system-picker", SystemPicker);

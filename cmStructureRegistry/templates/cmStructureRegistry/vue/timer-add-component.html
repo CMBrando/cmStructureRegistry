@@ -1,7 +1,7 @@
 <script type="text/x-template" id="timer-add-component">
     <div>
         <div v-if="showError">
-            <div v-for="msg in errors" class="text-danger">{{ msg }}</div>
+            <div v-for="msg in errors" class="text-danger">[[ msg ]]</div>
         </div>
         <div class="form-group">
             <label>Timer Paste</label>
@@ -14,14 +14,14 @@
         <div class="form-group">
             <label>System</label>
             <system-picker v-if="showSystemLookup" ref="system" :initSystem="initSystem" :isAsync="true" :minChars="2" :enableClearOption="false" :placeholder="'Search for a System...'" v-on:item-selected="systemChanged"></system-picker>
-            <div v-if="!showSystemLookup" style="font-size:16px">{{ systemName }}</div>
+            <div v-if="!showSystemLookup" style="font-size:16px">[[ systemName ]]</div>
         </div>
         <div class="form-group">
             <label>Timer Type</label>
             <select v-model="timerType" v-on:change="timerTypeChange">
                 <option value=""></option>
                 <option v-for="t in types" v-bind:value="t.id">
-                    {{ t.name }}
+                    [[ t.name ]]
                 </option>
             </select>
         </div>
@@ -30,7 +30,7 @@
             <select v-model="structureType">
                 <option value=""></option>
                 <option v-for="t in structureTypes" v-bind:value="t.id">
-                    {{ t.name }}
+                    [[ t.name ]]
                 </option>
             </select>
         </div>
@@ -39,7 +39,7 @@
             <select v-model="planet">
                 <option value=""></option>
                 <option v-for="p in planets" v-bind:value="p">
-                    {{ p }}
+                    [[ p ]]
                 </option>
             </select>
         </div>
@@ -47,7 +47,7 @@
             <label>Allegiance</label>
             <select v-model="hostilityType">
                 <option v-for="t in hostilityTypes" v-bind:value="t.id">
-                    {{ t.name }}
+                    [[ t.name ]]
                 </option>
             </select>
         </div>
@@ -61,7 +61,7 @@
         <div class="form-group" v-if="timerInput == 'datetime' || timerInput == 'specific'">
             <label>Date/Time UTC</label>
             <span v-if="timerInput == 'datetime'"><date-picker ref="date"></date-picker>&nbsp;<time-picker ref="time"></time-picker> (24h)</span>
-            <span v-if="timerInput == 'specific'">{{ timerDateString }}</span>
+            <span v-if="timerInput == 'specific'">[[ timerDateString ]]</span>
         </div>
         <div class="form-group" v-if="timerInput == 'countdown'">
             <label>Countdown</label>

@@ -1,7 +1,7 @@
 <script type="text/x-template" id="structure-add-registry">
     <div @keyup.esc="closeWindow">
         <div v-if="showError">
-            <div v-for="msg in errors" class="text-danger">{{ msg }}</div>
+            <div v-for="msg in errors" class="text-danger">[[ msg ]]</div>
         </div>
         <div class="form-group">
             <label>Structure Name <i class="fa-solid fa-circle-question" title="Copy and paste structure name from the selected items window"></i></label>
@@ -12,7 +12,7 @@
             <select v-model="structureType">
                 <option value=""></option>
                 <option v-for="t in structureTypes" v-bind:value="t.id">
-                    {{ t.name }}
+                    [[ t.name ]]
                 </option>
             </select>
         </div>
@@ -25,7 +25,7 @@
             <select v-model="planet">
                 <option value=""></option>
                 <option v-for="p in planets" v-bind:value="p">
-                    {{ p }}
+                    [[ p ]]
                 </option>
             </select>
         </div>        
@@ -36,7 +36,7 @@
         <div v-if="structure_id == null" class="form-group">
             <label>Structure Vulnerability</label>
             <select v-model="structVuln" style="padding:5px">
-                <option v-for="opt in vulnList" :value="opt">{{ opt }}</option>
+                <option v-for="opt in vulnList" :value="opt">[[ opt ]]</option>
             </select>           
         </div>
         <div v-if="structure_id == null" class="form-group">
@@ -45,9 +45,9 @@
             <div style="font-size: .7em">
                 <div v-for="(items, key) in fit" style="width: 180px; display: inline-block; margin-left:5px; margin-top:5px; vertical-align: top;">
                     <div style="display: inline;">
-                        <div style="font-weight: bold; text-transform: uppercase;">{{ key }}</div>
+                        <div style="font-weight: bold; text-transform: uppercase;">[[ key ]]</div>
                         <div v-for="type in fit[key]">
-                            {{ type.name }} x{{ type.multiplier }}
+                            [[ type.name ]] x[[ type.multiplier ]]
                         </div>
                     </div>
                 </div>

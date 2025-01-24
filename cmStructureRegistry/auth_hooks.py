@@ -19,7 +19,7 @@ class CMStructureRegistryMenuItem(MenuItemHook):
         )
 
     def render(self, request):
-        if request.user.has_perm("cmStructureRegistry.view_structureregistry"):
+        if request.user.has_perm("cmStructureRegistry.basic_access"):
             return MenuItemHook.render(self, request)
         return ""
 
@@ -36,7 +36,7 @@ class CMTimerMenuItem(MenuItemHook):
         )
 
     def render(self, request):
-        if request.user.has_perm("cmStructureRegistry.view_corptimer"):
+        if request.user.has_perm("cmStructureRegistry.basic_access"):
             return MenuItemHook.render(self, request)
         return ""          
 

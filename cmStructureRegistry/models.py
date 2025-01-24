@@ -2,12 +2,34 @@
 
 from django.db import models
 
+class General(models.Model):
+    """
+    Meta model for app permissions
+    """
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """
+        cmStructureRegistry :: Meta
+        """
+        managed = False
+        default_permissions = ()
+        permissions = (
+            # can access and register his own participation to a FAT link
+            ("basic_access", ("Can view structure registry and timers")),
+            ("manage_structures", ("Can add structures and set fits and vulnerabilities")),
+            ("manage_timers", ("Can add timers and set FCs")),
+            ("delete_structure", ("Can remove structures")),
+            ("delete_timer", ("Can delete timer"))
+        )
+        verbose_name = ("cmStructureRegistry")
+
 
 class Region(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
     class Meta:
+        default_permissions = ()
         db_table = "cm_region" 
 
 class Constellation(models.Model):
@@ -16,6 +38,7 @@ class Constellation(models.Model):
     region_id = models.IntegerField()
 
     class Meta:
+        default_permissions = ()                        
         db_table = "cm_constellation" 
 
 class SolarSystem(models.Model):
@@ -28,6 +51,7 @@ class SolarSystem(models.Model):
     security = models.FloatField(null=True)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_solar_system" 
 
 class TimerType(models.Model):
@@ -35,6 +59,7 @@ class TimerType(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_timer_type"
   
 class TimerHostility(models.Model):
@@ -49,6 +74,7 @@ class TimerStructureType(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_timer_structure_type"
 
 class CorpTimer(models.Model):
@@ -66,6 +92,7 @@ class CorpTimer(models.Model):
     planet = models.CharField(blank=True, max_length=255, null=True)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_corp_timer"
 
 class StructureType(models.Model):
@@ -73,6 +100,7 @@ class StructureType(models.Model):
     name = models.CharField(max_length=100)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_structure_type"
 
 class Alliance(models.Model):
@@ -81,6 +109,7 @@ class Alliance(models.Model):
     ticker = models.CharField(max_length=50)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_alliance"      
 
 class Corporation(models.Model):
@@ -90,6 +119,7 @@ class Corporation(models.Model):
     alliance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_corporation"
 
 
@@ -106,6 +136,7 @@ class StructureRegistry(models.Model):
     vulnerability_character_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_structure_registry"   
        
 class StructureRegistryFit(models.Model):
@@ -115,6 +146,7 @@ class StructureRegistryFit(models.Model):
     character_id = models.BigIntegerField(blank=False, null=False)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_structure_registry_fit"
 
 
@@ -138,6 +170,7 @@ class CorpTimerView(models.Model):
 
     class Meta:
         managed = False              
+        default_permissions = ()        
         db_table = "cm_corp_timer_view"
 
 
@@ -165,4 +198,5 @@ class StructureRegistryView(models.Model):
 
     class Meta:
         managed = False              
+        default_permissions = ()        
         db_table = "cm_structure_registry_view"                               
