@@ -5,7 +5,7 @@
         };
     },
     props: ['endtime', 'showRelative'],
-    template: '<span>{{ countdownText }}</span>',
+    template: '<span>[[ countdownText ]]</span>',
     mounted: function () {
 
         //this.refreshNow();

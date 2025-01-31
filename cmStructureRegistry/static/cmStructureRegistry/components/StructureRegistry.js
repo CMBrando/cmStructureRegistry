@@ -110,13 +110,7 @@ export default {
         },
         applySort: function () {
 
-            var res = _.chain(this.structures)
-                    .sortBy(this.sort.property)
-                    .value();
-
-            if (this.sort.direction == 'desc')
-                res = res.reverse();
-
+            var res = _.orderBy(this.structures, [this.sort.property], [this.sort.direction])
             this.structures = res;
 
             // reset all to hidden

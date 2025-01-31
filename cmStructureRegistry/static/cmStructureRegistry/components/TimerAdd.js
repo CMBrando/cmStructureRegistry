@@ -159,7 +159,8 @@
             }
         },
         onTimerRawInput: function () {
-            var text = s.clean(this.timerRawText);
+            
+            var text = _.trim(this.timerRawText).replace(/\s+/g, ' ');
 
             if (text) {
 
@@ -170,7 +171,7 @@
                     var number = match[0];
                     var index = text.indexOf(number);
 
-                    var structure = s.clean(text.substring(0, index));
+                    var structure = _.trim(text.substring(0, index));
                     var solarSystemName = structure.substring(0, structure.indexOf(' - '));                    
 
                     // check if special type
@@ -180,7 +181,7 @@
                     if(!solarSystemName && system) {
 
                         if(corp)
-                            structure = s.clean(structure.replace(corp, ""));  // clear corporation
+                            structure = _.trim(structure.replace(corp, ""));  // clear corporation
         
                         if(structure.includes("Skyhook"))
                             this.structureType = 19;
@@ -189,7 +190,7 @@
                         else if(structure.includes("Customs Office"))
                             this.structureType = 18;  // POCO
 
-                        solarSystemName = s.clean(system.substring(0, system.lastIndexOf(' ')));
+                        solarSystemName = _.trim(system.substring(0, system.lastIndexOf(' ')));
                     }
 
                     // only set structure if not passed in.

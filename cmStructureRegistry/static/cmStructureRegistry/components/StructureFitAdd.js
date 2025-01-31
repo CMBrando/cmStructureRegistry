@@ -52,7 +52,7 @@ export default {
             _.each(names, function (name) {
 
                 // trim leading and trailing whitespace on the line and multiple spaces to one space
-                name = s.clean(name);
+                name = _.trim(name).replace(/\s+/g, ' ');
                 var num = 1;
 
                 if (name === '')

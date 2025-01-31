@@ -73,24 +73,28 @@ export default {
             });
         },               
         onStructureNameInput: function () {
-
-            var regex = /\[([^\]]+)\]/;
-            var match = this.structureName.match(regex);
-
-            if(match) {
-                this.corporationName = match[1];
-
-                if(this.structureName.includes("Skyhook"))
-                    this.structureType = 19;
-                else
-                    this.structureType = 18;  // POCO
+            var name = _.trim(this.structureName).replace(/\s+/g, ' ');
+            if (name.slice(-1) === ')') {
+                this.structureName = name.substring(0, name.lastIndexOf(' ('));
+                this.corporationName = name.substring(name.lastIndexOf('(') + 1, name.length - 1);
             }
+            else {            
+                var regex = /\[([^\]]+)\]/;
+                var match = this.structureName.match(regex);
 
-            if(this.structureName.includes("Mercenary Den")) {
-                this.structureType = 21;
-                
+                if(match) {
+                    this.corporationName = match[1];
+
+                    if(this.structureName.includes("Skyhook"))
+                        this.structureType = 19;
+                    else
+                        this.structureType = 18;  // POCO
+                }
+
+                if(this.structureName.includes("Mercenary Den")) {
+                    this.structureType = 21;
+                }
             }
-
         },
         loadStructure: function () {
             var self = this;
@@ -102,7 +106,7 @@ export default {
         },
         parseFits: function () {
 
-            var raw = s.clean(this.fitText);
+            var raw = _.trim(this.fitText).replace(/\s+/g, ' ');
             var names = raw.split('\n');
 
             var fitItems = {};
@@ -112,7 +116,7 @@ export default {
             _.each(names, function (name) {
 
                 // trim leading and trailing whitespace on the line and multiple spaces to one space
-                name = s.clean(name);
+                name = _.trim(name).replace(/\s+/g, ' ');
                 var num = 1;
 
                 if (name === '')

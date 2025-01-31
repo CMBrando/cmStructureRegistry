@@ -34,14 +34,7 @@ export default {
         sort: {
             deep: true,
             handler: function () {
-
-                var res = _.chain(this.timers)
-                    .sortBy(this.sort.property)
-                    .value();
-
-                if (this.sort.direction == 'desc')
-                    res = res.reverse();
-
+                var res = _.orderBy(this.timers, [this.sort.property], [this.sort.direction]);
                 this.timers = res;
             }
         }
