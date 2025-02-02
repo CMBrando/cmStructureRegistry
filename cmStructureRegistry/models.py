@@ -67,6 +67,7 @@ class TimerHostility(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
+        default_permissions = ()        
         db_table = "cm_timer_hostility"
 
 class TimerStructureType(models.Model):

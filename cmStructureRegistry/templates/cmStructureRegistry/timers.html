@@ -275,7 +275,29 @@
         "hideDuration": "1000",
         "timeOut": "4000",
         "extendedTimeOut": "1000"
-        }            
+        }
+        
+    document.addEventListener("DOMContentLoaded", function () {
+        var theme = document.documentElement.getAttribute("data-theme");
+        if (theme) {
+            if (theme === "darkly") {
+
+                var style = document.createElement("style");
+
+                style.innerHTML = `
+                    .sub-header {
+                        color: #ddd;
+                    }
+
+                    .timer-detail {
+                        background: #ddd;
+                    }                
+                `;
+
+                document.head.appendChild(style);
+            }
+        }
+    });         
 
 
 {% endblock %}

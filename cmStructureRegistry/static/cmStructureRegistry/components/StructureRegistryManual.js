@@ -106,7 +106,7 @@ export default {
         },
         parseFits: function () {
 
-            var raw = _.trim(this.fitText).replace(/\s+/g, ' ');
+            var raw = _.trim(this.fitText);
             var names = raw.split('\n');
 
             var fitItems = {};
