@@ -52,7 +52,19 @@ class SolarSystem(models.Model):
 
     class Meta:
         default_permissions = ()        
-        db_table = "cm_solar_system" 
+        db_table = "cm_solar_system"
+
+class SolarSystemJump(models.Model):
+    from_solar_system_id = models.IntegerField()
+    to_solar_system_id = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['from_solar_system_id', 'to_solar_system_id'], name='cm_unique_solar_system_jump')
+        ]        
+        default_permissions = ()        
+        db_table = "cm_solar_system_jump"
+
 
 class TimerType(models.Model):
     id = models.AutoField(primary_key=True)

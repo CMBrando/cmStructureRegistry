@@ -26,17 +26,27 @@
             required: false,
             default: false
         },
-        initSystem: {
+        initSearch: {
             type: String,
             required: false,
             default: ''
+        },
+        searchUrl: {
+            type: String,
+            required: false,
+            default: ''            
+        },
+        clearOnSelection: {
+            type: Boolean,
+            required: false,
+            default: false            
         }
     },
     data() {
         return {
             isOpen: false,
             results: [],
-            search: this.initSystem,
+            search: this.initSearch,
             isLoading: false,
             arrowCounter: -1,
             showClear: this.enableClearOption && this.search
@@ -49,7 +59,6 @@
 
             var $that = this;
 
-            // Is the data given by an outside ajax request?
             if (this.search.length >= this.minChars) {
 
                 if (this.isAsync) {
@@ -58,7 +67,6 @@
                     this.filterByUrl();
 
                 } else {
-                    // Let's search our flat array
                     this.filterResults();
                     this.isOpen = true;
                 }
@@ -75,13 +83,7 @@
         },
         filterByUrl() {
             var that = this;
-            //$.getJSON('../Ship/SearchSolarSystem?query=' + this.search + '&_t=' + (new Date()).getTime(), null, function (data) {
-            //    //that.results = _.map(data, function (d) { return d.name; });
-            //    that.results = data;
-            //    that.isLoading = false;
-            //    that.arrowCounter = -1;
-            //});
-            fetch('SearchSolarSystems?query=' + this.search)
+            fetch(this.searchUrl + '?query=' + this.search)
                 .then(resp => {
                     return resp.json()
                 })
@@ -97,6 +99,9 @@
 
             this.$emit('item-selected', result);
             this.arrowCounter = -1;
+
+            if(this.clearOnSelection)
+                this.search = '';
         },
         onArrowDown(evt) {
             if (this.arrowCounter < this.results.length) {
@@ -124,6 +129,9 @@
 
             this.$emit('item-selected', this.results[this.arrowCounter]);
             this.arrowCounter = -1;
+
+            if(this.clearOnSelection)
+                this.search = '';            
         },
         onBlur: function () {
             if (this.search === '')

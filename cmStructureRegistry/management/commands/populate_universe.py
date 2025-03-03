@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from cmStructureRegistry.models import Region
 from cmStructureRegistry.models import Constellation
 from cmStructureRegistry.models import SolarSystem
+from cmStructureRegistry.models import SolarSystemJump
 
 class Command(BaseCommand):
     help = 'Populate Region, Constellation and Solar Systems'
@@ -38,7 +39,7 @@ class Command(BaseCommand):
             reader = csv.reader(file, delimiter="\t")
             for item in reader:
 
-                constallation, created = Constellation.objects.update_or_create(
+                constellation, created = Constellation.objects.update_or_create(
                     id=int(item[0]),
                     defaults = {
                         'name': item[1],
@@ -64,5 +65,21 @@ class Command(BaseCommand):
                         'security': float(item[6])
                     }
                 )                                   
+
+        file_path = os.path.join(current_directory, 'data', 'solarsystemjumps.txt')                
+
+        # Process Solar System Jumps
+        with open(file_path, newline='') as file:
+            reader = csv.reader(file, delimiter="\t")
+            for item in reader:
+
+                solarsystem, created = SolarSystemJump.objects.update_or_create(
+                    from_solar_system_id=int(item[2]), to_solar_system_id=int(item[3]),
+                    defaults = {
+                        'from_solar_system_id': int(item[2]),
+                        'to_solar_system_id': int(item[3])
+                    }
+                )
+
 
 

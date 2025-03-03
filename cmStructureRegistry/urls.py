@@ -27,5 +27,8 @@ urlpatterns = [
     path("SaveStructure", views.save_structure),
     path("AddStructureFit", views.save_structure_fit),
     path("SaveStructureVulnerability", views.save_structure_vuln),
-    path("RemoveStructure", views.delete_structure)
+    path("RemoveStructure", views.delete_structure),
+    path("SearchUniverse", views.search_universe),
+    path("SearchCorps", views.search_corps),
+    path("SearchStructure", views.search_structure)
 ]

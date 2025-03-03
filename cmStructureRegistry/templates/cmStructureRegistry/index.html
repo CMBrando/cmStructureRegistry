@@ -163,6 +163,7 @@
 
         import { createApp } from '//unpkg.com/vue@3/dist/vue.esm-browser.prod.js';
         import DatePicker  from '/static/cmStructureRegistry/components/vue-datepicker.js?v={{ CM_VERSION }}'
+        import GenericPicker from '/static/cmStructureRegistry/components/vue-autocomplete.js?v={{ CM_VERSION }}'
         import SystemPicker from '/static/cmStructureRegistry/components/vue-systempicker.js?v={{ CM_VERSION }}'
         import TimePicker from '/static/cmStructureRegistry/components/vue-timepicker.js?v={{ CM_VERSION }}'
         import RegionPicker from '/static/cmStructureRegistry/components/vue-regionpicker.js?v={{ CM_VERSION }}'
@@ -194,7 +195,7 @@
                     curr_structure_id: null,
                     curr_structure_name: '',
                     curr_vuln: null,
-                    refresh_key: 0,
+                    refresh_key: 0
                 }
             },
             methods: {
@@ -277,6 +278,7 @@
         _vue.config.compilerOptions.delimiters = ['[[', ']]'];
 
         _vue.component("date-picker", DatePicker);
+        _vue.component("generic-picker", GenericPicker);
         _vue.component("system-picker", SystemPicker);
         _vue.component("region-picker", RegionPicker);
         _vue.component("time-picker", TimePicker);
@@ -316,7 +318,29 @@
         "hideDuration": "1000",
         "timeOut": "4000",
         "extendedTimeOut": "1000"
-        }       
+        }
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            var theme = document.documentElement.getAttribute("data-theme");
+            if (theme) {
+                if (theme === "darkly") {
+    
+                    var style = document.createElement("style");
+    
+                    style.innerHTML = `
+                        .registry-input > .fa-close {
+                            color: #ddd;
+                        }
+                        
+                        .autocomplete .fa-times {
+                            color: #ddd !important;
+                        }                        
+                    `;
+    
+                    document.head.appendChild(style);
+                }
+            }
+        });         
 
 {% endblock %}
 

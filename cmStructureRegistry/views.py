@@ -3,6 +3,7 @@
 from django.contrib.auth.decorators import login_required, permission_required
 
 from datetime import datetime, timedelta, timezone
+from dateutil import parser
 import pytz
 import random
 import re
@@ -22,6 +23,7 @@ from allianceauth.eveonline.models import EveAllianceInfo
 from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.framework.api.user import get_main_character_from_user
 from allianceauth.services.hooks import get_extension_logger
+from esi.models import Token
 
 
 from .models import TimerType
@@ -29,6 +31,8 @@ from .models import TimerStructureType
 from .models import TimerHostility
 from .models import Region
 from .models import SolarSystem
+from .models import SolarSystemJump
+from .models import Constellation
 from .models import CorpTimerView
 from .models import CorpTimer
 from .models import StructureRegistry
@@ -36,6 +40,7 @@ from .models import StructureRegistryView
 from .models import StructureRegistryFit
 from .models import Corporation
 from .models import Alliance
+from .models import StructureType
 
 from .forms import CorpTimerForm
 from .forms import FleetCommanderForm
@@ -47,6 +52,13 @@ from .utils import get_alliance_api_info
 from .utils import solar_system_lookup
 from .utils import corporation_lookup
 from .utils import get_roman_numeral
+from .utils import get_api_notifications
+from .utils import get_api_type
+from .utils import get_api_planet
+from .utils import parse_notification
+from .utils import filetime_to_date
+from .utils import calculate_lightyears
+from .utils import count_jumps
 from cmStructureRegistry import app_settings
 
 
@@ -54,6 +66,11 @@ ANSIBLEX_STRUCTURE_TYPE = 7
 POCO_STRUCTURE_TYPE = 18
 SKYHOOK_STRUCTURE_TYPE = 19
 MERC_STRUCTURE_TYPE = 21
+
+ARMOR_TYPE = 1
+HULL_TIMER = 2
+IHUB_TIMER = 8
+POCO_TYPE = 18
 
 # Get an instance of a logger
 logger = get_extension_logger(__name__)
@@ -99,6 +116,44 @@ def search_solar_systems(request):
     query = request.GET.get('query', '')
     items = list(SolarSystem.objects.filter(name__istartswith=query).values())
     return JsonResponse(items, safe=False)
+
+@login_required
+@permission_required("cmStructureRegistry.basic_access")
+def search_universe(request):
+    query = request.GET.get('query', '')
+    items = list(SolarSystem.objects.filter(name__istartswith=query).values())
+    items2 = list(Constellation.objects.filter(name__istartswith=query).values())
+    items3 = list(Region.objects.filter(name__istartswith=query).values())
+
+    merged_list = list(map(lambda x: {**x, 'name': f"{x['name']} (sys)"}, items)) + \
+              list(map(lambda x: {**x, 'name': f"{x['name']} (const)"}, items2)) + \
+              list(map(lambda x: {**x, 'name': f"{x['name']} (reg)"}, items3)) 
+
+    return JsonResponse(merged_list, safe=False)
+
+@login_required
+@permission_required("cmStructureRegistry.basic_access")
+def search_corps(request):
+    query = request.GET.get('query', '')
+    items = list(EveAllianceInfo.objects.filter(Q(alliance_name__icontains=query) | Q(alliance_ticker__istartswith=query)).values())
+    items2 = list(EveCorporationInfo.objects.filter(Q(corporation_name__icontains=query) | Q(corporation_ticker__istartswith=query)).values())
+
+    merged_list = list(map(lambda x: {**x, 'name': f"{x['alliance_name']} (all)", 'id': f"{x['alliance_id']}"}, items)) + \
+              list(map(lambda x: {**x, 'name': f"{x['corporation_name']} (corp)", 'id': f"{x['corporation_id']}"}, items2))
+
+    return JsonResponse(merged_list, safe=False)
+
+@login_required
+@permission_required("cmStructureRegistry.basic_access")
+def search_structure(request):
+    query = request.GET.get('query', '')
+    items = list(StructureRegistryView.objects.filter(structure_name__icontains=query).values())
+    items2 = list(TimerStructureType.objects.filter(name__istartswith=query).values())
+
+    merged_list = list(map(lambda x: {**x, 'name': f"{x['structure_name']} (name)", 'id': f"{x['structure_id']}"}, items)) + \
+                            list(map(lambda x: {**x, 'name': f"{x['name']} (type)"}, items2))
+
+    return JsonResponse(merged_list, safe=False)
 
 @login_required
 @permission_required("cmStructureRegistry.basic_access")
@@ -155,17 +210,27 @@ def get_open_timers(request):
     current_time_utc = datetime.now(timezone.utc)
     time_60_minutes_ago = current_time_utc - timedelta(minutes=60)
 
+    sel_system = request.GET.get('system')
+
     items = list(CorpTimerView.objects.filter(timer_datetime__gt=time_60_minutes_ago).values())
+
+    if sel_system:
+        for item in items:
+            item['jumps'] = count_jumps(int(sel_system), item['system_id'])
+            item['distance'] = calculate_lightyears(int(sel_system), item['system_id'])
+
     return JsonResponse(items, safe=False)
 
 @login_required
 @permission_required("cmStructureRegistry.basic_access")
 def get_recent_timers(request):
+
     current_time_utc = datetime.now(timezone.utc)
     time_60_minutes_ago = current_time_utc - timedelta(minutes=60)
     time_14_days_ago = current_time_utc - timedelta(days=14)
 
     items = list(CorpTimerView.objects.filter(timer_datetime__range=[time_14_days_ago, time_60_minutes_ago]).values())
+
     return JsonResponse(items, safe=False)    
 
 
@@ -239,17 +304,60 @@ def search_registry(request):
 @permission_required("cmStructureRegistry.basic_access")
 def registry_read(request):
 
-    term = request.GET.get('term', '')
-    region_id = request.GET.get('regionId', 0)
-    items = []
+    universe = request.GET.get('universe').split(',') if request.GET.get('universe') != '' else []
+    corp = request.GET.get('corp').split(',') if request.GET.get('corp') != '' else []
+    structure = request.GET.get('structure').split(',') if request.GET.get('structure') != '' else []
+    universeItems = []
+    corpItems = []
+    structureItems = []
 
-    if region_id != '0':
-        items = list(StructureRegistryView.objects.filter(Q(region_id=region_id) & (Q(structure_name__icontains=term) | Q(structure_type__icontains=term) | Q(alliance__icontains=term) | Q(corporation__icontains=term) | Q(constellation__icontains=term))).values())
-    elif term != '':
-        items = list(StructureRegistryView.objects.filter(Q(structure_name__icontains=term) | Q(structure_type__icontains=term) | Q(alliance__icontains=term) | Q(corporation__icontains=term) | Q(constellation__icontains=term)).values())
+    staging_system_id = request.GET.get('staging_system')
+
+    if universe:
+        universeItems = list(StructureRegistryView.objects.filter(Q(solar_system_id__in=universe) | Q(constellation_id__in=universe) | Q(region_id__in=universe)).values())
+
+    if corp:
+        corpItems = list(StructureRegistryView.objects.filter(Q(corporation_id__in=corp) | Q(alliance_id__in=corp)).values())
+
+    if structure:
+        structureItems = list(StructureRegistryView.objects.filter(Q(structure_id__in=structure) | Q(structure_type_id__in=structure)).values())
+
+    items = []
+    if universe:
+        items.extend(universeItems)
+
+    if corp and items:
+        # Merge the lists based on common structures
+        items = [
+            {**o1, **o2} 
+            for o1 in items
+            for o2 in corpItems
+            if o1['structure_id'] == o2['structure_id']
+        ]
     else:
+        items.extend(corpItems)
+
+    if structure and items:
+        # Merge the lists based on common structures
+        items = [
+            {**o1, **o2} 
+            for o1 in items
+            for o2 in structureItems
+            if o1['structure_id'] == o2['structure_id']
+        ]
+    else:
+        items.extend(structureItems)
+
+
+    # no filters passed
+    if not universe and not corp and not structure:        
         items = list(StructureRegistryView.objects.values())
 
+    # calc distance
+    if staging_system_id:
+        for item in items:
+            item['jumps'] = count_jumps(int(staging_system_id), item['solar_system_id'])
+            item['distance'] = calculate_lightyears(int(staging_system_id), item['solar_system_id'])    
        
     return JsonResponse(items, safe=False)
           
@@ -514,6 +622,8 @@ def delete_structure(request):
 
         
     return JsonResponse({ 'success': success, 'errors': msgs })
+
+
 
 
 

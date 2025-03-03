@@ -6,18 +6,23 @@ export default {
             sort: { property: "structure_name", direction: "asc" },
             structures: [],
             structures_flag: [],
-            search: '',
-            region_id: null
+            selUniverse: [],
+            selCorp: [],
+            selStructure: [],
+            staging_system_id: null
         };
     },
-    props: ['type', 'refresh_key', 'admin', 'add', 'edit', 'add_timer'],
+    props: ['type', 'refresh_key', 'admin', 'add', 'edit', 'add_timer', 'stagingSystem'],
     mounted: function () {
 
         var query = window.location.search;
         var url = new URLSearchParams(query);
-        var srch = url.get('s');
-        if (srch !== null)
-            this.search = srch;
+
+        var structId = url.get('sid');
+        var structName = url.get('sname');
+        
+        if (structId !== null)
+            this.selStructure.push({id: parseInt(structId), name: structName})
 
         this.loadData();
     },
@@ -41,13 +46,19 @@ export default {
     methods: {
         loadData: function () {
 
-            //this.search = $(this.$el).find('.search-text').val();
-
             var me = this;
 
-            var regId = this.region_id == null ? 0 : this.region_id;
+            var universe = _.map(this.selUniverse, 'id').join(',')
+            var corp = _.map(this.selCorp, 'id').join(',')
+            var struct = _.map(this.selStructure, 'id').join(',')
 
-            $.get('RegistryRead?term=' + encodeURIComponent(this.search) + '&regionId=' + regId, function (data) {
+            var url = '';
+            if(this.staging_system_id)
+                url = 'RegistryRead?staging_system=' + this.staging_system_id + '&universe=' + universe + '&corp=' + corp + '&structure=' + struct;
+            else
+                url = 'RegistryRead?universe=' + universe + '&corp=' + corp + '&structure=' + struct;
+
+            $.get(url, function (data) {
 
                 me.structures = [];
 
@@ -60,6 +71,7 @@ export default {
 
                     me.structures.push(item);
                     me.structures_flag.push({ val: false });
+
                 });
 
                 me.show = true;
@@ -67,19 +79,81 @@ export default {
                 me.applySort(); // change the sorting if any
             });
         },
-        regionSelected: function (region) {
-            this.region_id = region.id;
-            this.loadData();
+        universeSelected: function(item) {
+            if(item && item.id) {
+                var index = _.findIndex(this.selUniverse, function (t) { return t.id === item.id; });
+
+                if(index === -1) {
+                    this.selUniverse.push(item);
+                    this.loadData();
+                }
+            }
+        },     
+        corpSelected: function(item) {
+            if(item && item.id) {
+                var index = _.findIndex(this.selCorp, function (t) { return t.id === item.id; });
+
+                if(index === -1) {
+                    this.selCorp.push(item);
+                    this.loadData();
+                }
+            }
+        },     
+        structureSelected: function(item) {
+            if(item && item.id) {            
+                var index = _.findIndex(this.selStructure, function (t) { return t.id === item.id; });
+
+                if(index === -1) {
+                    this.selStructure.push(item);
+                    this.loadData();
+                }
+            }
         },
+        removeUniverseInput: function(id) {
+            var index = _.findIndex(this.selUniverse, function (t) { return t.id === id; });
+            if(index > -1) {
+                this.selUniverse.splice(index, 1)
+                this.loadData();
+            }
+        },
+        removeCorpInput: function(id) {
+            var index = _.findIndex(this.selCorp, function (t) { return t.id === id; });
+            if(index > -1) {
+                this.selCorp.splice(index, 1)
+                this.loadData();
+            }
+        },
+        removeStructureInput: function(id) {
+            var index = _.findIndex(this.selStructure, function (t) { return t.id === id; });
+            if(index > -1) {
+                this.selStructure.splice(index, 1)
+                this.loadData()
+            }
+        },
+        stagingSystemChanged: function(item) {
+            this.staging_system_id = item.id;
+            this.loadData()
+        },        
         formatDate: function (date) {
             if (date != null)
                 return moment.utc(date).format('YYYY-MM-DD HH:mm');
             else
                 return '';
         },
+        formatFloat: function (number) {
+            return numeral(number).format('0.0')
+        },          
         addCommas: function (num) {
             return numeral(num).format('0,0');
         },
+        distanceText: function(struct) {
+            if(struct.jumps) {
+                var distance = this.formatFloat(struct.distance);
+                return `${distance} ly (${struct.jumps} jp)`;
+            }
+            else
+                return ''
+        },        
         getStatus: function (type, date) {
             if (type != null && date != null)
                 return type + ' - ' + moment.utc(date).fromNow();

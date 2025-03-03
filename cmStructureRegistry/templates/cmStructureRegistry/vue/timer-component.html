@@ -35,6 +35,13 @@
                         Timer Left
                     </span>
                 </div>
+                <div v-if="type == 'open'" style="width:125px">
+                    <span v-on:click="toggleSort('distance')" v-bind:class="{ focused: isSortProp('distance') }">
+                        Distance
+                        <i class="fa fa-sort-up" v-if="showSortIcon('distance', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('distance', 'desc')"></i>
+                    </span>
+                </div>                
                 <div style="width:150px">
                     <span v-on:click="toggleSort('fleet_commander')" v-bind:class="{ focused: isSortProp('fleet_commander') }">
                         Lead FC
@@ -76,6 +83,9 @@
                 <div style="width: 150px" :class="{ 'red': isRed(timer.timer_datetime) }">
                     [[ fromNow(timer.timer_datetime) ]]
                 </div>
+                <div v-if="type == 'open'" style="width:125px">
+                    [[ distanceText(timer) ]]
+                </div>                
                 <div style="width:150px">
                     [[ timer.fleet_commander ]]
                 </div>
@@ -86,7 +96,7 @@
                     [[ timer.created_by ]]
                 </div>
                 <div class="detail-icon" v-show="(timer.structure_id != null)" width="20px">
-                    <a :href="'../cmStructureRegistry/?s=' + encodeURIComponent(timer.structure_name)" target="_blank"><i class="fa fa-building" title="Go to Structure"></i></a>
+                    <a :href="'../cmStructureRegistry/?sname=' + encodeURIComponent(timer.structure_name) + '&sid=' + timer.structure_id" target="_blank"><i class="fa fa-building" title="Go to Structure"></i></a>
                 </div>
                 <div class="detail-icon" v-show="type === 'recent' && add" width="50px">
                     <i class="fa fa-plus-circle" title="Add Timer" v-on:click="addTimer(timer.id)"></i>

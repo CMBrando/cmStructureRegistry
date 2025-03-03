@@ -1,8 +1,43 @@
 <script id="structure-component" type="text/x-template">
     <div>
         <div class="structure-search">
-            <input type="text" v-on:keyup.enter.exact="loadData" class="search-text" v-model="search" v-on:submit.prevent="onSubmit" placeholder="Structure, type, system, constellation, etc. ENTER to search..." style="width: 400px;padding:5px; margin-bottom: 10px;" />&nbsp;&nbsp;<region-picker placeholder="Search Regions..." :isAsync="true" :enableClearOption="true" v-on:item-selected="regionSelected"></region-picker>&nbsp;&nbsp;&nbsp;&nbsp;<input v-if="add" type="button" value="Add Structure" v-on:click="addStructure" />
+            <div>
+                <generic-picker searchUrl="SearchUniverse" is-async="true" min-chars="2" placeholder="System, Constellation, Region..." clearOnSelection="true" v-on:item-selected="universeSelected"></generic-picker>
+            </div>
+            <div>
+                <generic-picker searchUrl="SearchCorps" is-async="true" min-chars="2" placeholder="Corporation, Alliance..." clearOnSelection="true" v-on:item-selected="corpSelected"></generic-picker>
+            </div>
+            <div>
+                <generic-picker searchUrl="SearchStructure" is-async="true" min-chars="2" placeholder="Structure, Type..." clearOnSelection="true" v-on:item-selected="structureSelected"></generic-picker>                
+            </div>
+            <div>
+                <input v-if="add" type="button" value="Add Structure" v-on:click="addStructure" />                                    
+            </div>
+            <div style="float:right">
+                <system-picker ref="system" is-async="true" min-chars="2" enable-clear-option="true" placeholder="Staging System..." v-on:item-selected="stagingSystemChanged"></system-picker>
+            </div>
+            <div style="clear:both"></div>            
         </div>
+        <div style="vertical-align: top">
+            <div class="registry-input-group">
+                <div v-for="item in selUniverse" class="registry-input">
+                    <i class="fa fa-close" v-on:click="removeUniverseInput(item.id)"></i>
+                    <span>[[ item.name ]]</span>
+                </div>
+            </div>
+            <div class="registry-input-group">
+                <div v-for="item in selCorp" class="registry-input" style="display:inline-block">
+                    <i class="fa fa-close" v-on:click="removeCorpInput(item.id)"></i>
+                    <span>[[ item.name ]]</span>
+                </div>
+            </div>
+            <div class="registry-input-group">
+                <div v-for="item in selStructure" class="registry-input" style="display:inline-block">
+                    <i class="fa fa-close" v-on:click="removeStructureInput(item.id)"></i>
+                    <span>[[ item.name ]]</span>
+                </div>
+            </div>
+        </div>          
         <div class="structure-grid" v-if="show">
             <div class="structure-sort">
                 <div style="width:30px">
@@ -36,6 +71,13 @@
                         <i class="fa fa-sort-down" v-if="showSortIcon('corporation', 'desc')"></i>
                     </span>
                 </div>
+                <div style="width:125px">
+                    <span v-on:click="toggleSort('distance')" v-bind:class="{ focused: isSortProp('distance') }">
+                        Distance
+                        <i class="fa fa-sort-up" v-if="showSortIcon('distance', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('distance', 'desc')"></i>
+                    </span>
+                </div>                 
                 <div style="width: 100px">
                     <span v-on:click="toggleSort('vulnerability')" v-bind:class="{ focused: isSortProp('vulnerability') }">
                         Window
@@ -80,6 +122,9 @@
                 <div style="width:80px">
                     <a :href="'https://evewho.com/corporation/' + structure.corporation_id" target="_blank">[[ structure.corporation ]]</a>
                 </div>
+                <div style="width:125px">
+                    [[ distanceText(structure) ]]
+                </div>                  
                 <div style="width:100px">
                     [[ structure.vulnerability ]]
                 </div>

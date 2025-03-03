@@ -281,15 +281,63 @@ a {
     margin-bottom: 15px;
 }
 
-.structure-search > .autocomplete
+.structure-search > div
 {
     display: inline-block;
+    margin-right: 5px;
+}
+
+.structure-search .autocomplete input
+{
+    background-color: #f3f3f3;
+}
+
+.autocomplete-result
+{
+    background-color: #f3f3f3;
+}
+
+
+.structure-search .autocomplete
+{
+    background-color: ddd;
+}
+
+.registry-input {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.registry-input-group {
+    width:350px; 
+    display:inline-block; 
+    margin-right: 5px;
+}
+
+.registry-input span {
+    display:inline-block;
+    padding: 7px;
+    background-color: #74a6bd;
+    border-radius: 5px;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.registry-input > .fa-close {
+    font-size: 1.5em;
+    position: relative;
+    float: right;
+    top: -10px;
+    right: 10px;
+    cursor: pointer;
 }
 
 .structure-grid {
     display: table;
     margin-bottom: 15px;
-    width: 1130px;
+    width: 1260px;
 }
 
 .structure-sort {

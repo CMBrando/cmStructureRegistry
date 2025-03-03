@@ -23,10 +23,11 @@ export default {
             sort: { property: "timer_datetime", direction: "asc" },
             timers: [],
             now: (new Date()).getTime(),
-            frequency: 30000
+            frequency: 30000,
+            staging_system: this.stagingSystemId
         };
     },
-    props: ['type', 'admin', 'add', 'edit', 'add_timer'],
+    props: ['type', 'admin', 'add', 'edit', 'stagingSystemId'],
     mounted: function () {
         this.loadData();
     },
@@ -36,6 +37,12 @@ export default {
             handler: function () {
                 var res = _.orderBy(this.timers, [this.sort.property], [this.sort.direction]);
                 this.timers = res;
+            }
+        },
+        stagingSystemId: {
+            handler: function() {
+                this.staging_system = this.stagingSystemId
+                this.loadData()
             }
         }
     },
@@ -48,8 +55,7 @@ export default {
             if (this.type === 'recent')
                 url = 'GetRecentTimers';
             else
-                url = 'GetOpenTimers';
-
+                url = 'GetOpenTimers?system=' + (this.staging_system ? this.staging_system: '');
 
             $.get(url, function (data) {
 
@@ -101,6 +107,9 @@ export default {
         formatTimer: function (dateTime) {
             return moment.utc(dateTime).format('MM/DD HH:mm:ss');
         },
+        formatFloat: function (number) {
+            return numeral(number).format('0.0')
+        },        
         fromNow: function (dateTime) {
 
             if (this.type === 'open')
@@ -134,6 +143,14 @@ export default {
             var timer = _.find(this.timers, function (t) { return t.id === id; });
 
             this.$emit('set-fleetcommander', id, timer.fleet_commander);
+        },
+        distanceText: function(timer) {
+            if(timer.jumps) {
+                var distance = this.formatFloat(timer.distance);
+                return `${distance} ly (${timer.jumps} jp)`;
+            }
+            else
+                return 'N/A'
         }
     }
 }
