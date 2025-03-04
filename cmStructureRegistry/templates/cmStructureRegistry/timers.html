@@ -80,7 +80,7 @@
                 <input type="button" value="Add Timer" v-on:click="addTimer(null)" />
             </div>
             <div style="float:right">
-                <div>
+                <div class="staging-search">
                     <system-picker ref="system" is-async="true" min-chars="2" enable-clear-option="true" placeholder="Staging System..." v-on:item-selected="stagingSystemChanged"></system-picker>
                 </div> 
             </div>
@@ -112,7 +112,6 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="/static/cmStructureRegistry/css/main.css?v={{ CM_VERSION }}">
-MM
 {% endblock %}
 
 {% block extra_javascript %}

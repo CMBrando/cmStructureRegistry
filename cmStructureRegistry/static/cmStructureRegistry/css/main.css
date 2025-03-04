@@ -81,9 +81,11 @@ input[type='button']:focus, button:focus {
         color: white;
     }
 
+
 .timer-header {
     margin-bottom:10px;
 }
+
 
 .timer-header .autocomplete input {
     background-color: #f3f3f3;   
@@ -309,6 +311,9 @@ a {
     background-color: #f3f3f3;
 }
 
+.structure-header {
+    margin-bottom:10px;
+}
 
 .structure-search .autocomplete
 {

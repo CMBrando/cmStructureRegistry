@@ -1,5 +1,14 @@
 <script id="structure-component" type="text/x-template">
     <div>
+        <div class="structure-header">
+            <div style="float:left">
+                <input v-if="add" type="button" value="Add Structure" v-on:click="addStructure" />                                    
+            </div>
+            <div style="float:right" class="staging-search">
+                <system-picker ref="system" is-async="true" min-chars="2" enable-clear-option="true" placeholder="Staging System..." v-on:item-selected="stagingSystemChanged"></system-picker>
+            </div>
+            <div style="clear:both"></div>        
+        </div>
         <div class="structure-search">
             <div>
                 <generic-picker searchUrl="SearchUniverse" is-async="true" min-chars="2" placeholder="System, Constellation, Region..." clearOnSelection="true" v-on:item-selected="universeSelected"></generic-picker>
@@ -9,14 +18,7 @@
             </div>
             <div>
                 <generic-picker searchUrl="SearchStructure" is-async="true" min-chars="2" placeholder="Structure, Type..." clearOnSelection="true" v-on:item-selected="structureSelected"></generic-picker>                
-            </div>
-            <div>
-                <input v-if="add" type="button" value="Add Structure" v-on:click="addStructure" />                                    
-            </div>
-            <div style="float:right">
-                <system-picker ref="system" is-async="true" min-chars="2" enable-clear-option="true" placeholder="Staging System..." v-on:item-selected="stagingSystemChanged"></system-picker>
-            </div>
-            <div style="clear:both"></div>            
+            </div>                        
         </div>
         <div style="vertical-align: top">
             <div class="registry-input-group">
