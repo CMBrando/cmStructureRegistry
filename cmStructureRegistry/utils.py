@@ -97,11 +97,11 @@ def count_jumps(start, target):
     key = f"cmDistance_{start}_{target}"
     jump_cache = cache.get(key)
 
-    start = str(start)
-    target = str(target)
-
     if jump_cache:
         return int(jump_cache)
+
+    start = str(start)
+    target = str(target)       
 
     graph = None
     graph_cache = cache.get('cm_system_graph')
@@ -125,7 +125,6 @@ def count_jumps(start, target):
             graph[from_solar_system_id].append(to_solar_system_id)
 
         cache.set('cm_system_graph', json.dumps(graph), JUMP_KEY_CACHE) # Save the cache
-        #graph = cache.get('cm_system_graph') # Then immediately load it to normalize the data WIP: unknown if needed
 
     queue = deque([(start, 0)])
     visited = set()

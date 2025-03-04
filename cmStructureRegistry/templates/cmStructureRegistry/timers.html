@@ -75,14 +75,13 @@
                 </div>
             </transition>
         </div>
-        <div style="margin-bottom:10px">
+        <div class="timer-header">
             <div v-if="canAdd" style="float:left">
                 <input type="button" value="Add Timer" v-on:click="addTimer(null)" />
             </div>
             <div style="float:right">
-                <span class="header-label">Staging: </span> 
-                <div style="display:inline-block">
-                    <system-picker ref="system" :initSystem="null" :is-async="true" :min-chars="2" :enable-clear-option="true" :placeholder="'Search for a System...'" v-on:item-selected="stagingSystemChanged"></system-picker>
+                <div>
+                    <system-picker ref="system" is-async="true" min-chars="2" enable-clear-option="true" placeholder="Staging System..." v-on:item-selected="stagingSystemChanged"></system-picker>
                 </div> 
             </div>
             <div style="clear:both"></div>            
@@ -304,10 +303,6 @@ MM
 
                     .header-label {
                         color: #ddd;
-                    }
-                    
-                    .autocomplete .fa-times {
-                        color: #ddd !important;
                     }
 
                     .timer-detail {

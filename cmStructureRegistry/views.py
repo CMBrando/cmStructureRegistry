@@ -147,11 +147,11 @@ def search_corps(request):
 @permission_required("cmStructureRegistry.basic_access")
 def search_structure(request):
     query = request.GET.get('query', '')
-    items = list(StructureRegistryView.objects.filter(structure_name__icontains=query).values())
-    items2 = list(TimerStructureType.objects.filter(name__istartswith=query).values())
+    items = list(TimerStructureType.objects.filter(name__istartswith=query).values())    
+    items2 = list(StructureRegistryView.objects.filter(structure_name__icontains=query).values())
 
-    merged_list = list(map(lambda x: {**x, 'name': f"{x['structure_name']} (name)", 'id': f"{x['structure_id']}"}, items)) + \
-                            list(map(lambda x: {**x, 'name': f"{x['name']} (type)"}, items2))
+    merged_list =  list(map(lambda x: {**x, 'name': f"{x['name']} (type)"}, items)) + \
+                        list(map(lambda x: {**x, 'name': f"{x['structure_name']} (name)", 'id': f"{x['structure_id']}"}, items2))
 
     return JsonResponse(merged_list, safe=False)
 
