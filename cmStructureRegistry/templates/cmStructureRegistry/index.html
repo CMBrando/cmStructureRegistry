@@ -96,11 +96,32 @@
                 </div>
             </transition>
         </div>
-        <div v-if="showStructureAddModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+        <div v-if="showStructureReviewModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
             <transition name="modal">
                 <div class="modal-mask">
                     <div class="modal-wrapper">
                         <div class="modal-dialog" style="width: 400px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" v-on:click="closeModal">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <div class="modal-title">Confirm Review</div>
+                                </div>
+                                <div class="modal-body">
+                                    <structure-review :structure_id="curr_structure_id" :structure_name="curr_structure_name" v-on:review-canceled="closeModal" v-on:structure-reviewed="structureReviewed" v-on:created="initModal"></structure-remove>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>       
+        <div v-if="showStructureAddModal" @keydown.esc="closeModal" tabindex="-1" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 450px">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" v-on:click="closeModal">
@@ -117,7 +138,7 @@
                 </div>
             </transition>
         </div>
-        <structure-component v-on:edit-fit="loadAddFit" :admin="isAdmin" :edit="canEdit" :add="canAdd" :add_timer="canAddTimer" :refresh_key="refresh_key" v-on:edit-vulnerability="loadVuln" v-on:add-timer="loadAddTimer" v-on:remove-structure="loadRemoveStructure" v-on:add-structure="loadAddStructure" v-on:edit-structure="loadEditStructure"></structure-component>
+        <structure-component v-on:edit-fit="loadAddFit" :admin="isAdmin" :edit="canEdit" :add="canAdd" :add_timer="canAddTimer" :refresh_key="refresh_key" v-on:edit-vulnerability="loadVuln" v-on:add-timer="loadAddTimer" v-on:remove-structure="loadRemoveStructure" v-on:add-structure="loadAddStructure" v-on:edit-structure="loadEditStructure" v-on:set-review="loadReviewStructure"></structure-component>
     </div>
 </div>
 {% endverbatim %}
@@ -155,6 +176,7 @@
     {% include 'cmStructureRegistry/vue/structure-fit.html' %}
     {% include 'cmStructureRegistry/vue/structure-vulnerability.html' %}
     {% include 'cmStructureRegistry/vue/structure-remove.html' %}
+    {% include 'cmStructureRegistry/vue/structure-review.html' %}
     {% include 'cmStructureRegistry/vue/timer-add-component.html' %}
 
     {% endautoescape %}
@@ -175,6 +197,7 @@
         import StructureBulkAdd from '/static/cmStructureRegistry/components/StructureRegistryAdd.js?v={{ CM_VERSION }}'        
         import StructureFit from '/static/cmStructureRegistry/components/StructureFitAdd.js?v={{ CM_VERSION }}'       
         import StructureRegistryRemove from '/static/cmStructureRegistry/components/StructureRemove.js?v={{ CM_VERSION }}'
+        import StructureRegistryReview from '/static/cmStructureRegistry/components/StructureReview.js?v={{ CM_VERSION }}'
         import StructureRegistryVuln from '/static/cmStructureRegistry/components/StructureVuln.js?v={{ CM_VERSION }}'       
         import TimerAdd from '/static/cmStructureRegistry/components/TimerAdd.js?v={{ CM_VERSION }}'
 
@@ -192,6 +215,7 @@
                     showTimerModal: false,
                     showStructureRemoveModal: false,
                     showStructureAddModal: false,
+                    showStructureReviewModal: false,
                     curr_structure_id: null,
                     curr_structure_name: '',
                     curr_vuln: null,
@@ -224,6 +248,12 @@
                     this.curr_structure_id = structureID
                     this.showStructureAddModal = true;
                 },
+                loadReviewStructure: function(struct) {
+                    this.curr_structure_id = struct.structure_id;
+                    this.curr_structure_name = struct.structure_name;
+
+                    this.showStructureReviewModal = true;
+                },
                 structureRemoved: function () {
                     this.showStructureRemoveModal = false;
                     this.refresh_key = this.refresh_key + 1;
@@ -232,12 +262,17 @@
                     this.showStructureAddModal = false;
                     this.refresh_key = this.refresh_key + 1;
                 },
+                structureReviewed: function() {
+                    this.showStructureReviewModal = false;
+                    this.refresh_key = this.refresh_key + 1;
+                },
                 closeModal: function () {
                     this.showModal = false;
                     this.showVulnModal = false;
                     this.showTimerModal = false;
                     this.showStructureRemoveModal = false;
                     this.showStructureAddModal = false;
+                    this.showStructureReviewModal = false;
                 },
                 fitAdded: function () {
                     this.showModal = false;
@@ -291,6 +326,7 @@
         _vue.component("structure-fit", StructureFit);
         _vue.component("structure-remove", StructureRegistryRemove);
         _vue.component("structure-vulnerability", StructureRegistryVuln);
+        _vue.component("structure-review", StructureRegistryReview)
         _vue.component("timer-add-component", TimerAdd);           
 
         _vue.mount('#vue-app');

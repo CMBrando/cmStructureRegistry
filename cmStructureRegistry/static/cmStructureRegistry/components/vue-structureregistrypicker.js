@@ -144,12 +144,19 @@
             });
         },
         onEnter() {
-            this.search = this.results[this.arrowCounter].name;
-            this.isOpen = false;
-            this.showClear = true;
-
-            this.$emit('item-selected', this.results[this.arrowCounter]);
-            this.arrowCounter = -1;
+            // select first one if only result
+            if(this.arrowCounter == -1 && this.results.length == 1) {
+                this.search = this.results[0].name;
+                this.$emit('item-selected', this.results[0]);                
+                this.isOpen = false;                
+            }
+            else if(this.arrowCounter > -1) {
+                this.search = this.results[this.arrowCounter].name;
+                this.isOpen = false;
+    
+                this.$emit('item-selected', this.results[this.arrowCounter]);
+                this.arrowCounter = -1;    
+            }
         },
         onBlur: function () {
             if (this.search === '')

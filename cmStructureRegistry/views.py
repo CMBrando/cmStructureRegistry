@@ -17,6 +17,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.core import serializers
 from django.db.models import Q
+from django.utils.dateparse import parse_datetime
 
 # Alliance Auth
 from allianceauth.eveonline.models import EveAllianceInfo
@@ -71,6 +72,9 @@ ARMOR_TYPE = 1
 HULL_TIMER = 2
 IHUB_TIMER = 8
 POCO_TYPE = 18
+
+UNIVERSE_OFFSET = 1.0e+13
+METERS_PER_LIGHT_YEAR = 9.461e+15
 
 # Get an instance of a logger
 logger = get_extension_logger(__name__)
@@ -396,6 +400,8 @@ def save_structure(request):
             structure_type_id = int(form.data['structure_type_id'])
             fit = form.data['fit']  #base64 encoded
             vulnerability = form.data['vulnerability']
+            next_vulnerability = form.data['next_vulnerability']
+            next_vulnerability_date = form.data['next_vulnerability_date']
             system_id = form.data['system_id'] # for merc den
             planet = form.data['planet'] # for merd den
 
@@ -490,7 +496,11 @@ def save_structure(request):
                         if vulnerability:
                             registry.vulnerability = vulnerability
                             registry.vulnerability_updated = utc_now
-                            registry.vulnerability_character_id = main_character.character_id  
+                            registry.vulnerability_character_id = main_character.character_id
+
+                            if next_vulnerability and next_vulnerability_date:
+                                registry.next_vulnerability = next_vulnerability
+                                registry.next_vulnerability_date = parse_datetime(next_vulnerability_date)
 
                         # save stucture at the end
                         registry.save()
@@ -577,6 +587,8 @@ def save_structure_vuln(request):
         
         structure_id = request.POST.get('structureID', 0)
         vuln = request.POST.get('vulnerability')
+        next_vuln = request.POST.get('nextVulnerability')
+        next_vuln_date = request.POST.get('nextVulnerabilityDate')
         
         utc_now = datetime.now(timezone.utc)
         main_character = get_main_character_from_user(user=request.user)
@@ -588,12 +600,16 @@ def save_structure_vuln(request):
             instance.vulnerability = vuln
             instance.vulnerability_updated = utc_now
             instance.vulnerability_character_id = main_character.character_id         
-            instance.save(update_fields=['vulnerability', 'vulnerability_updated', 'vulnerability_character_id'])
+
+            if next_vuln and next_vuln_date:
+                instance.next_vulnerability = next_vuln
+                instance.next_vulnerability_date = parse_datetime(next_vuln_date)
+
+            instance.save(update_fields=['vulnerability', 'vulnerability_updated', 'vulnerability_character_id', 'next_vulnerability', 'next_vulnerability_date'])
             success = True
 
         
     return JsonResponse({ 'success': success, 'errors': msgs })
-
 
 @login_required
 @permission_required("cmStructureRegistry.delete_structure")
@@ -622,6 +638,65 @@ def delete_structure(request):
 
         
     return JsonResponse({ 'success': success, 'errors': msgs })
+
+def eve_map(request):
+        return render(request, "cmStructureRegistry/evemap.html")    
+
+def load_eve_map(request):
+    results = {}
+    systems = SolarSystem.objects.values()
+    mappings = SolarSystemJump.objects.values()
+    regions = Region.objects.values()
+    constellations = Constellation.objects.values()
+
+    elements = []
+
+    for system in systems:
+
+        item = { 
+            "group": "nodes",
+            "data": { "id": str(system.get('id')), 
+                      "name": system.get('name'), 
+                      "parent": str(system.get('constellation_id')) 
+                    }
+        }
+
+        if system.get('x'):
+            item["position"] = { 'x': system.get('x') / UNIVERSE_OFFSET , 'y': system.get('z') / UNIVERSE_OFFSET }  
+
+        elements.append(item)
+
+    for constellation in constellations:
+        item = { 
+            "group": "nodes",
+            "data": { "id": str(constellation.get('id')), 
+                      "name": constellation.get('name'), 
+                      "parent": str(constellation.get('region_id')) 
+                    }
+            }
+
+    for region in regions:
+        item = { 
+            "group": "nodes",
+            "data": { "id": str(system.get('id')), 
+                      "name": system.get('name')  
+                    }
+            }
+
+    for map in mappings:
+        item = {
+            "group": "edges",
+            "data": { "id": str(map.get('id')), 'source': str(map.get('to_solar_system_id')), 'target': str(map.get('from_solar_system_id'))  }
+        }
+    
+        elements.append(item)
+
+
+    return JsonResponse(elements, safe=False)
+    
+
+
+
 
 
 

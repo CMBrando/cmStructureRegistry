@@ -1,5 +1,5 @@
 <script type="text/x-template" id="structure-add-registry">
-    <div @keyup.esc="closeWindow">
+    <div>
         <div v-if="showError">
             <div v-for="msg in errors" class="text-danger">[[ msg ]]</div>
         </div>
@@ -33,13 +33,22 @@
             <label>Corporation / Ticker</label>
             <input type="text" v-model="corporationName" style="width:300px" />
         </div>
-        <div v-if="structure_id == null" class="form-group">
-            <label>Structure Vulnerability</label>
+        <div class="form-group">
+            <label>Vulnerability</label>
             <select v-model="structVuln" style="padding:5px">
                 <option v-for="opt in vulnList" :value="opt">[[ opt ]]</option>
             </select>           
         </div>
-        <div v-if="structure_id == null" class="form-group">
+        <div class="form-group">
+            <label>Vulnerability Text <i class="fa-solid fa-circle-question" title="Right click Hacking Result text and select 'Copy'"></i></label>
+            <textarea v-model="structVulnText" v-on:input="parseVulnerability" style="width:380px;height:100px; padding: 5px" placeholder="Optional...Paste in Vulnerability...."></textarea>            
+            <div v-if="structVulnText">
+                    <div>Vuln: <b>[[ structVuln ]]</b></div>
+                    <div>Next Vuln: <b>[[ nextVuln ]]</b></div>
+                    <div>Next Date: <b>[[ nextVulnDate ]]</b></div>
+            </div>            
+        </div>
+        <div class="form-group">
             <label>Structure Fit</label>
             <textarea v-model="fitText" v-on:input="parseFits" style="width:380px;height:100px; padding: 5px" placeholder="Optional...Paste in Eve Structure Fit...ONLY SCANS...."></textarea>
             <div style="font-size: .7em">

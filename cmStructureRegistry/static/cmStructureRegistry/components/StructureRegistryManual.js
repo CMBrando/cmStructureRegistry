@@ -17,6 +17,9 @@ export default {
             fitText: null,
             vulnList: null,
             structVuln: null,
+            structVulnText: null,
+            nextVuln: null,
+            nextVulnDate: null,
             fit: null,
             showError: false,
             errors: []
@@ -45,15 +48,25 @@ export default {
 
         this.$refs.structureName.focus();
 
-        var question = $(this.$el).find('.fa-circle-question')[0];
-        var tt = new bootstrap.Tooltip(question, {
+        var questions = $(this.$el).find('.fa-circle-question');
+
+        var tt = new bootstrap.Tooltip(questions[0], {
             trigger: 'hover',
             placement: 'top',
             title: function() {
-                return $(question).attr('title');
+                return $(questions[0]).attr('title');
             }
-        });        
+        });
 
+        if(questions.length > 1) {
+            var tt2 = new bootstrap.Tooltip(questions[1], {
+                trigger: 'hover',
+                placement: 'top',
+                title: function() {
+                    return $(questions[1]).attr('title');
+                }
+            });
+        }
     },
     methods: {
         loadTypes: function () {
@@ -102,7 +115,23 @@ export default {
                 self.structureName = data.structure_name;
                 self.structureType = data.structure_type_id;
                 self.corporationName = data.corporation;
+                self.structVuln = data.vulnerability;
             });
+        },
+        parseVulnerability: function() {
+            if(this.structVulnText) {
+                var lines = this.structVulnText.split('\n');            
+                if(lines.length == 4) {
+                    this.structVuln = _.trim(lines[1].substring(_.indexOf(lines[1], ':') + 1)).replace(":", "")
+                    this.nextVuln = _.trim(lines[2].substring(_.indexOf(lines[2], ':') + 1)).replace(":", "")
+                    this.nextVulnDate = _.trim(lines[3].substring(_.indexOf(lines[3], ':') + 1))
+                }
+            }
+            else {
+                this.structVuln = null;
+                this.nextVuln = null;
+                this.nextVulnDate = null;
+            }
         },
         parseFits: function () {
 
@@ -170,6 +199,10 @@ export default {
                 fitEncoded = btoa(String.fromCodePoint(...uint8Array));
             }
 
+            var nextVulnISODate = ''
+            if(this.nextVulnDate)
+                nextVulnISODate = moment.utc(this.nextVulnDate, 'YYYY.MM.DD HH:mm').toISOString()
+
             $.ajax({
                 cache: false,
                 type: 'POST',
@@ -180,6 +213,8 @@ export default {
                     structure_type_id: this.structureType === '' ? null : this.structureType,
                     corporation_name: this.corporationName,
                     vulnerability: this.structVuln,
+                    next_vulnerability: this.nextVuln,
+                    next_vulnerability_date: nextVulnISODate,
                     fit: fitEncoded,
                     system_id: this.systemId,
                     planet: this.planet

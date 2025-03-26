@@ -153,7 +153,32 @@ export default {
             }
             else
                 return ''
-        },        
+        },
+        getReviewTooltip: function(struct) {
+
+            if(struct.vulnerability_updated && struct.fit_updated && this.formatDate(struct.vulnerability_updated) == this.formatDate(struct.fit_updated))
+                return 'All Reviewed by: ' + struct.vulnerability_updated_by;
+
+            var result = '';
+
+            if(struct.vulnerability_updated)
+                result = 'Vuln: <i>' + this.formatDate(struct.vulnerability_updated) + '</i> by ' + struct.vulnerability_updated_by;
+
+            if(struct.vulnerability_updated && struct.fit_updated)
+                result += '<br/>'
+
+            if(struct.fit_updated)
+                result += 'Fit: <i>' + this.formatDate(struct.fit_updated) + '</i> by ' + struct.fit_updated_by;
+
+            return result;
+        },
+        getVulnTooltip: function(struct) {
+                
+                if(struct.next_vulnerability)
+                    return 'Next Vuln: ' + struct.next_vulnerability + '<br/>Date: ' + this.formatDate(struct.next_vulnerability_date);
+                
+                return '';
+        },
         getStatus: function (type, date) {
             if (type != null && date != null)
                 return type + ' - ' + moment.utc(date).fromNow();
@@ -203,6 +228,9 @@ export default {
         modifyVuln: function (index) {
             this.$emit('edit-vulnerability', this.structures[index].structure_id);
         },
+        loadReviewStructure: function (index) {
+            this.$emit('set-review', this.structures[index]);
+        },        
         addTimer: function (index) {
             this.$emit('add-timer', this.structures[index].structure_id);
         },
@@ -224,12 +252,24 @@ export default {
                 $(that.$el).find('.updated-tooltip').each(function(index, el) {
                     var tt = new bootstrap.Tooltip(el, {
                         trigger: 'hover',
+                        html: true,
                         placement: 'top',
                         title: function() {
                             return $(el).attr('updated');
                         }
                     })
                 });
+
+                $(that.$el).find('.vuln-tooltip').each(function(index, el) {
+                    var tt = new bootstrap.Tooltip(el, {
+                        trigger: 'hover',
+                        html: true,
+                        placement: 'top',
+                        title: function() {
+                            return $(el).attr('updated');
+                        }
+                    })
+                });                
 
                 $(that.$el).find('.status-tooltip').each(function(index, el) {
 

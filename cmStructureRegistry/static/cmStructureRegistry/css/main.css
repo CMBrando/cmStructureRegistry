@@ -38,6 +38,10 @@ input[type='button']:focus, button:focus {
     border: 1px solid gray;
 }
 
+.form-group input[type='text'], .form-group select, .form-group textarea {
+    background-color: #fff;
+}
+
 
 .form-group .datepicker input {
     width: 55px !important;
@@ -53,6 +57,7 @@ input[type='button']:focus, button:focus {
 
 .autocomplete {
     position: relative;
+    width: 350px;
 }
 
 .autocomplete-results {
@@ -244,6 +249,9 @@ input[type='button']:focus, button:focus {
 
 .modal-body {
     padding: 10px;
+    max-height: 95vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .modal-content {
@@ -289,6 +297,10 @@ a {
     textarea {
         width: 300px !important;
     }
+}
+
+.staging-search .autocomplete input {
+    background: #eee;
 }
 
 .structure-search {
@@ -354,7 +366,7 @@ a {
 .structure-grid {
     display: table;
     margin-bottom: 15px;
-    width: 1260px;
+    width: 1230px;
 }
 
 .structure-sort {
@@ -476,11 +488,15 @@ a {
     margin-bottom: 10px;
 }
 
-.st-tooltip {
+.st-tooltip, .vuln-tooltip {
     text-decoration: underline;
     cursor: pointer;
 }
 
 .tooltip.show {
     z-index: 10000;
+}
+
+.tooltip-inner {
+    max-width: 400px !important; 
 }

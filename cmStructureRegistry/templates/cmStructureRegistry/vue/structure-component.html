@@ -95,13 +95,13 @@
                     </span>
                 </div>
                 <div style="width:150px">
-                    <span v-on:click="toggleSort('fit_last_updated_date')" v-bind:class="{ focused: isSortProp('fit_last_updated_date') }">
-                        Fit Updated
-                        <i class="fa fa-sort-up" v-if="showSortIcon('fit_last_updated_date', 'asc')"></i>
-                        <i class="fa fa-sort-down" v-if="showSortIcon('fit_last_updated_date', 'desc')"></i>
+                    <span v-on:click="toggleSort('reviewed_date')" v-bind:class="{ focused: isSortProp('reviewed_date') }">
+                        Reviewed
+                        <i class="fa fa-sort-up" v-if="showSortIcon('reviewed_date', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('reviewed_date', 'desc')"></i>
                     </span>
                 </div>
-                <div style="width: 120px">
+                <div style="width: 100px">
                     <span style="cursor:default;">
                         Action
                     </span>
@@ -128,20 +128,17 @@
                     [[ distanceText(structure) ]]
                 </div>                  
                 <div style="width:100px">
-                    [[ structure.vulnerability ]]
+                    <span v-bind:class="{ 'vuln-tooltip': (structure.next_vulnerability != null), 'text-warning': (structure.next_vulnerability != null) }" :updated="getVulnTooltip(structure)">[[ structure.vulnerability ]]</span>
                 </div>
                 <div style="width:125px">
                     <span v-if="structure.timer_datetime" class="st-tooltip" v-bind:class="{ 'status-tooltip': structure.timer_datetime }" :timer="structure.timer_datetime">[[ structure.timer_type ]]</span>
                     <span v-if="structure.timer_type === 'REMOVED'">[[ structure.timer_type ]]</span>
                 </div>
                 <div style="width:150px">
-                    <span class="st-tooltip" v-bind:class="{ 'updated-tooltip': (structure.fit_last_updated_date !== '') }" :updated="structure.fit_last_updated_by">[[ formatDate(structure.fit_last_updated_date) ]]</span>
+                    <span class="st-tooltip" v-bind:class="{ 'updated-tooltip': (structure.reviewed_date !== '') }" :updated="getReviewTooltip(structure)">[[ formatDate(structure.reviewed_date) ]]</span>
                 </div>
-                <div class="structure-edit" style="width:130px">
-                    <i v-if="edit" class="fa fa-wrench" title="Edit Structure" v-on:click="editStructure(index)"></i>
-                    <i v-if="edit && structure.fit_last_updated_date != null" class="fa fa-edit" title="Edit Fit" v-on:click="modifyFit(index)"></i>
-                    <i v-if="edit && structure.fit_last_updated_date == null" class="fa fa-plus-square" style="margin-right:2px;" title="Add Fit" v-on:click="modifyFit(index)"></i>
-                    <i v-if="edit" class="fa fa-adjust" title="Set Window" v-on:click="modifyVuln(index)"></i>
+                <div class="structure-edit" style="width:100px">
+                    <i v-if="edit" class="fa fa-edit" title="Edit Structure" v-on:click="editStructure(index)"></i>
                     <i v-if="add_timer" class="fa fa-clock" title="Add Timer" v-on:click="addTimer(index)"></i>
                     <i v-if="admin && structure.timer_type !== 'REMOVED'" class="fa fa-times" title="Remove Structure" v-on:click="removeStructure(index)"></i>
                 </div>
