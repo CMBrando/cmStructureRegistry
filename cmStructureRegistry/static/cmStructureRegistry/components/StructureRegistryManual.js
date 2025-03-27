@@ -121,7 +121,10 @@ export default {
         parseVulnerability: function() {
             if(this.structVulnText) {
                 var lines = this.structVulnText.split('\n');            
-                if(lines.length == 4) {
+                if(lines.length == 2) {
+                    this.structVuln = _.trim(lines[1].substring(_.indexOf(lines[1], ':') + 1)).replace(":", "")                    
+                }
+                else if(lines.length == 4) {
                     this.structVuln = _.trim(lines[1].substring(_.indexOf(lines[1], ':') + 1)).replace(":", "")
                     this.nextVuln = _.trim(lines[2].substring(_.indexOf(lines[2], ':') + 1)).replace(":", "")
                     this.nextVulnDate = _.trim(lines[3].substring(_.indexOf(lines[3], ':') + 1))
