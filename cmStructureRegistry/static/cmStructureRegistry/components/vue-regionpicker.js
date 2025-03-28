@@ -129,21 +129,18 @@
             }
         },
         onBlur: function () {
-            if (this.search === '')
-                this.$emit('item-selected', { id: null, name: null });
-
-            this.isOpen = false;
+            var $that = this;
+            setTimeout(function() {
+                if ($that.search === '')
+                    $that.$emit('item-selected', { id: null, name: null });
+    
+                $that.isOpen = false;    
+            }, 200)
         },
         clearSelection: function () {
             this.showClear = false;
             this.search = '';
             this.$emit('item-selected', { id: null, name: '', name: null });
-        },
-        handleClickOutside(evt) {
-            if (!this.$el.contains(evt.target)) {
-                this.isOpen = false;
-                this.arrowCounter = -1;
-            }
         }
     },
     watch: {
