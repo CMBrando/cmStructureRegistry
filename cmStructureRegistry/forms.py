@@ -36,7 +36,7 @@ class StructureRegistryForm(forms.ModelForm):
 
     class Meta:
         model = StructureRegistry
-        fields = ['structure_name', 'structure_type_id', 'vulnerability', 'next_vulnerability', 'next_vulnerability_date', 'structure_notes']
+        fields = ['structure_name', 'structure_type_id', 'vulnerability', 'next_vulnerability', 'next_vulnerability_date', 'structure_notes', 'pos_online']
         error_messages = {
             'structure_name': {
                 'required': 'Structure Name is required'

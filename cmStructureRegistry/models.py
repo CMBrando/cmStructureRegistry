@@ -65,6 +65,14 @@ class SolarSystemJump(models.Model):
         default_permissions = ()        
         db_table = "cm_solar_system_jump"
 
+class POSType(models.Model):        
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=100)
+    group = models.CharField(max_length=100)
+
+    class Meta:
+        default_permissions = ()        
+        db_table = "cm_pos_type"
 
 class TimerType(models.Model):
     id = models.AutoField(primary_key=True)
@@ -151,7 +159,8 @@ class StructureRegistry(models.Model):
     next_vulnerability_date = models.DateTimeField(blank=True, null=True)
     reviewed_date = models.DateTimeField(blank=True, null=True)
     reviewed_character_id = models.BigIntegerField(blank=True, null=True)
-    structure_notes = models.CharField(blank=True, max_length=1000)    
+    structure_notes = models.CharField(blank=True, max_length=1000)
+    pos_online = models.BooleanField(default=False) 
 
     class Meta:
         default_permissions = ()        
@@ -219,6 +228,7 @@ class StructureRegistryView(models.Model):
     timer_datetime = models.DateTimeField(blank=True, null=True)
     timer_type = models.CharField(blank=True, max_length=50, null=True)     
     removed_date = models.DateTimeField(blank=True, null=True)
+    pos_online = models.BooleanField(default=False)    
 
     class Meta:
         managed = False              

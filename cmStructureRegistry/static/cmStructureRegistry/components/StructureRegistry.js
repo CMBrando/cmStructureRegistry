@@ -9,7 +9,8 @@ export default {
             selUniverse: [],
             selCorp: [],
             selStructure: [],
-            staging_system_id: null
+            staging_system_id: null,
+            pos_type: 12
         };
     },
     props: ['type', 'refresh_key', 'admin', 'add', 'edit', 'add_timer', 'stagingSystem'],

@@ -194,9 +194,17 @@ input[type='button']:focus, button:focus {
     height: 34px;
 }
 
-    .form-group input:not([type='button']), .form-group select {
-        min-width: 150px;
-    }
+.form-group input:not([type='button'],[type='checkbox']), .form-group select {
+    min-width: 150px;
+}
+
+.form-group .form-check {
+    min-height: 2em;
+}
+
+.form-group .form-check-input {
+    min-width: 75px;
+}
 
 .form-group textarea {
     padding: 5px;

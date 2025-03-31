@@ -42,6 +42,7 @@ from .models import StructureRegistryFit
 from .models import Corporation
 from .models import Alliance
 from .models import StructureType
+from .models import POSType
 
 from .forms import CorpTimerForm
 from .forms import FleetCommanderForm
@@ -382,6 +383,12 @@ def get_structure(request):
 
 @login_required
 @permission_required("cmStructureRegistry.manage_structures")
+def pos_types(request):
+    items = list(POSType.objects.all().values())
+    return JsonResponse(items, safe=False)
+
+@login_required
+@permission_required("cmStructureRegistry.manage_structures")
 def save_structure(request):
 
     success = False
@@ -404,6 +411,7 @@ def save_structure(request):
             next_vulnerability_date = form.data['next_vulnerability_date']
             system_id = form.data['system_id'] # for merc den
             planet = form.data['planet'] # for merd den
+            pos_online = form.data['pos_online']
 
             corp_result = corporation_lookup(corporation_name)
 
@@ -464,6 +472,7 @@ def save_structure(request):
                         registry.structure_name = structure_name
                         registry.solar_system_id = system_result['id'] if system_result else system_id
                         registry.corporation_id = corp_result['id']
+                        registry.pos_online = pos_online
                         registry.removed = False
 
                         # update or add corporation and alliance

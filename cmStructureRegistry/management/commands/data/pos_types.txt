@@ -1,0 +1,194 @@
+12235	Amarr Control Tower	Control Towers
+12236	Gallente Control Tower	Control Towers
+16213	Caldari Control Tower	Control Towers
+16214	Minmatar Control Tower	Control Towers
+20059	Amarr Control Tower Medium	Control Towers
+20060	Amarr Control Tower Small	Control Towers
+20061	Caldari Control Tower Medium	Control Towers
+20062	Caldari Control Tower Small	Control Towers
+20063	Gallente Control Tower Medium	Control Towers
+20064	Gallente Control Tower Small	Control Towers
+20065	Minmatar Control Tower Medium	Control Towers
+20066	Minmatar Control Tower Small	Control Towers
+27530	Blood Control Tower	Control Towers
+27532	Dark Blood Control Tower	Control Towers
+27533	Guristas Control Tower	Control Towers
+27535	Dread Guristas Control Tower	Control Towers
+27536	Serpentis Control Tower	Control Towers
+27538	Shadow Control Tower	Control Towers
+27539	Angel Control Tower	Control Towers
+27540	Domination Control Tower	Control Towers
+27589	Blood Control Tower Medium	Control Towers
+27591	Dark Blood Control Tower Medium	Control Towers
+27592	Blood Control Tower Small	Control Towers
+27594	Dark Blood Control Tower Small	Control Towers
+27595	Guristas Control Tower Medium	Control Towers
+27597	Dread Guristas Control Tower Medium	Control Towers
+27598	Guristas Control Tower Small	Control Towers
+27600	Dread Guristas Control Tower Small	Control Towers
+27601	Serpentis Control Tower Medium	Control Towers
+27603	Shadow Control Tower Medium	Control Towers
+27604	Serpentis Control Tower Small	Control Towers
+27606	Shadow Control Tower Small	Control Towers
+27607	Angel Control Tower Medium	Control Towers
+27609	Domination Control Tower Medium	Control Towers
+27610	Angel Control Tower Small	Control Towers
+27612	Domination Control Tower Small	Control Towers
+27780	Sansha Control Tower	Control Towers
+27782	Sansha Control Tower Medium	Control Towers
+27784	Sansha Control Tower Small	Control Towers
+27786	True Sansha Control Tower	Control Towers
+27788	True Sansha Control Tower Medium	Control Towers
+27790	True Sansha Control Tower Small	Control Towers
+27638	Guristas Cruise Missile Battery	Missile Batteries
+27640	Dread Guristas Cruise Missile Battery	Missile Batteries
+27641	Guristas Torpedo Battery	Missile Batteries
+27643	Dread Guristas Torpedo Battery	Missile Batteries
+27560	Guristas XL Torpedo Battery	Missile Batteries
+27562	Dread Guristas XL Torpedo Battery	Missile Batteries
+16696	Cruise Missile Battery	Missile Batteries
+16697	Torpedo Battery	Missile Batteries
+17773	XL Torpedo Battery	Missile Batteries
+17174	Ion Field Projection Battery	Electronic Warfare Batteries
+17175	Phase Inversion Battery	Electronic Warfare Batteries
+17176	Spatial Destabilization Battery	Electronic Warfare Batteries
+17177	White Noise Generation Battery	Electronic Warfare Batteries
+17178	Stasis Webification Battery	Electronic Warfare Batteries
+17180	Sensor Dampening Battery	Electronic Warfare Batteries
+17181	Warp Disruption Battery	Electronic Warfare Batteries
+17182	Warp Scrambling Battery	Electronic Warfare Batteries
+27563	Serpentis Warp Disruption Battery	Electronic Warfare Batteries
+27565	Shadow Warp Disruption Battery	Electronic Warfare Batteries
+27567	Serpentis Warp Scrambling Battery	Electronic Warfare Batteries
+27569	Shadow Warp Scrambling Battery	Electronic Warfare Batteries
+27570	Angel Stasis Webification Battery	Electronic Warfare Batteries
+27573	Domination Stasis Webification Battery	Electronic Warfare Batteries
+27574	Guristas Ion Field Projection Battery	Electronic Warfare Batteries
+27576	Dread Guristas Ion Field Projection Battery	Electronic Warfare Batteries
+27577	Guristas Phase Inversion Battery	Electronic Warfare Batteries
+27579	Dread Guristas Phase Inversion Battery	Electronic Warfare Batteries
+27580	Guristas Spatial Destabilization Battery	Electronic Warfare Batteries
+27582	Dread Guristas Spatial Destabilization Battery	Electronic Warfare Batteries
+27583	Guristas White Noise Generation Battery	Electronic Warfare Batteries
+27585	Dread Guristas White Noise Generation Battery	Electronic Warfare Batteries
+27778	Serpentis Sensor Dampening Battery	Electronic Warfare Batteries
+27779	Shadow Sensor Dampening Battery	Electronic Warfare Batteries
+12238	Reprocessing Array	Reprocessing Arrays
+19470	Intensive Reprocessing Array	Reprocessing Arrays
+17982	Coupling Array	Silos
+25270	Biochemical Silo	Silos
+25271	Catalyst Silo	Silos
+25280	Hazardous Chemical Silo	Silos
+14343	Silo	Silos
+30655	Hybrid Polymer Silo	Silos
+25821	General Storage	Silos
+12237	Ship Maintenance Array	Ship Maintenance Arrays
+24646	X-Large Ship Maintenance Array	Ship Maintenance Arrays
+17184	Ballistic Deflection Array	Shield Hardening Arrays
+17185	Explosion Dampening Array	Shield Hardening Arrays
+17186	Heat Dissipation Array	Shield Hardening Arrays
+17187	Photon Scattering Array	Shield Hardening Arrays
+16221	Moon Harvesting Array	Moon Harvesting Arrays
+16869	Complex Reactor Array	Reactors
+20175	Simple Reactor Array	Reactors
+22634	Medium Biochemical Reactor Array	Reactors
+24684	Biochemical Reactor Array	Reactors
+30656	Polymer Reactor Array	Reactors
+17621	Corporate Hangar Array	Corporate Hangar Array
+17770	Large AutoCannon Battery	Projectile Batteries
+17771	Medium AutoCannon Battery	Projectile Batteries
+17772	Small AutoCannon Battery	Projectile Batteries
+16631	Small Artillery Battery	Projectile Batteries
+16688	Medium Artillery Battery	Projectile Batteries
+16689	Large Artillery Battery	Projectile Batteries
+27554	Angel Large AutoCannon Battery	Projectile Batteries
+27556	Domination Large AutoCannon Battery	Projectile Batteries
+27557	Angel Large Artillery Battery	Projectile Batteries
+27559	Domination Large Artillery Battery	Projectile Batteries
+27644	Angel Medium Artillery Battery	Projectile Batteries
+27646	Domination Medium Artillery Battery	Projectile Batteries
+27647	Angel Medium AutoCannon Battery	Projectile Batteries
+27649	Domination Medium AutoCannon Battery	Projectile Batteries
+27650	Angel Small Artillery Battery	Projectile Batteries
+27652	Domination Small Artillery Battery	Projectile Batteries
+27653	Angel Small AutoCannon Battery	Projectile Batteries
+27655	Domination Small AutoCannon Battery	Projectile Batteries
+16690	Small Railgun Battery	Hybrid Batteries
+16691	Medium Railgun Battery	Hybrid Batteries
+16692	Large Railgun Battery	Hybrid Batteries
+17402	Large Blaster Battery	Hybrid Batteries
+17403	Medium Blaster Battery	Hybrid Batteries
+17404	Small Blaster Battery	Hybrid Batteries
+27542	Serpentis Large Blaster Battery	Hybrid Batteries
+27544	Shadow Large Blaster Battery	Hybrid Batteries
+27545	Serpentis Large Railgun Battery	Hybrid Batteries
+27547	Shadow Large Railgun Battery	Hybrid Batteries
+27613	Serpentis Medium Blaster Battery	Hybrid Batteries
+27615	Shadow Medium Blaster Battery	Hybrid Batteries
+27616	Serpentis Medium Railgun Battery	Hybrid Batteries
+27618	Shadow Medium Railgun Battery	Hybrid Batteries
+27619	Serpentis Small Blaster Battery	Hybrid Batteries
+27621	Shadow Small Blaster Battery	Hybrid Batteries
+27622	Serpentis Small Railgun Battery	Hybrid Batteries
+27624	Shadow Small Railgun Battery	Hybrid Batteries
+27625	Blood Medium Beam Laser Battery	Laser Batteries
+27627	Dark Blood Medium Beam Laser Battery	Laser Batteries
+27628	Blood Medium Pulse Laser Battery	Laser Batteries
+27630	Dark Blood Medium Pulse Laser Battery	Laser Batteries
+27631	Blood Small Beam Laser Battery	Laser Batteries
+27633	Dark Blood Small Beam Laser Battery	Laser Batteries
+27634	Blood Small Pulse Laser Battery	Laser Batteries
+27636	Dark Blood Small Pulse Laser Battery	Laser Batteries
+27548	Blood Large Pulse Laser Battery	Laser Batteries
+27550	Dark Blood Large Pulse Laser Battery	Laser Batteries
+27551	Blood Large Beam Laser Battery	Laser Batteries
+27553	Dark Blood Large Beam Laser Battery	Laser Batteries
+17406	Large Pulse Laser Battery	Laser Batteries
+17407	Medium Pulse Laser Battery	Laser Batteries
+17408	Small Pulse Laser Battery	Laser Batteries
+16694	Large Beam Laser Battery	Laser Batteries
+17167	Small Beam Laser Battery	Laser Batteries
+17168	Medium Beam Laser Battery	Laser Batteries
+27766	Sansha Large Beam Laser Battery	Laser Batteries
+27767	Sansha Large Pulse Laser Battery	Laser Batteries
+27768	Sansha Medium Beam Laser Battery	Laser Batteries
+27769	Sansha Medium Pulse Laser Battery	Laser Batteries
+27770	Sansha Small Beam Laser Battery	Laser Batteries
+27771	Sansha Small Pulse Laser Battery	Laser Batteries
+27772	True Sansha Large Beam Laser Battery	Laser Batteries
+27773	True Sansha Large Pulse Laser Battery	Laser Batteries
+27774	True Sansha Medium Beam Laser Battery	Laser Batteries
+27775	True Sansha Medium Pulse Laser Battery	Laser Batteries
+27776	True Sansha Small Beam Laser Battery	Laser Batteries
+27777	True Sansha Small Pulse Laser Battery	Laser Batteries
+24574	Small Ship Assembly Array	Assembly Arrays
+24575	Supercapital Ship Assembly Array	Assembly Arrays
+29613	Large Ship Assembly Array	Assembly Arrays
+30389	Subsystem Assembly Array	Assembly Arrays
+33867	Thukker Component Assembly Array	Assembly Arrays
+24653	Advanced Small Ship Assembly Array	Assembly Arrays
+24654	Medium Ship Assembly Array	Assembly Arrays
+24655	Advanced Medium Ship Assembly Array	Assembly Arrays
+24656	Capital Ship Assembly Array	Assembly Arrays
+24657	Advanced Large Ship Assembly Array	Assembly Arrays
+24658	Ammunition Assembly Array	Assembly Arrays
+24659	Drone Assembly Array	Assembly Arrays
+24660	Component Assembly Array	Assembly Arrays
+16220	Rapid Equipment Assembly Array	Assembly Arrays
+13780	Equipment Assembly Array	Assembly Arrays
+16216	Research Laboratory	Laboratory
+25305	Drug Lab	Laboratory
+24567	Experimental Laboratory	Laboratory
+28351	Design Laboratory	Laboratory
+32245	Hyasyoda Research Laboratory	Laboratory
+27672	Energy Neutralizing Battery	Energy Neutralization Batteries
+27855	Sansha Energy Neutralizing Battery	Energy Neutralization Batteries
+27856	True Sansha Energy Neutralizing Battery	Energy Neutralization Batteries
+27857	Blood Energy Neutralizing Battery	Energy Neutralization Batteries
+27858	Dark Blood Energy Neutralizing Battery	Energy Neutralization Batteries
+27675	System Scanning Array	System Scanning Array
+27897	Jump Bridge	Jump Bridge 
+27674	Cynosural System Jammer	Cynosural System Jammer
+27673	Cynosural Generator Array	Cynosural Generator Array
+33149	Personal Hangar Array	Personal Hangar Arrays
+12239	Compression Array	Compression Array

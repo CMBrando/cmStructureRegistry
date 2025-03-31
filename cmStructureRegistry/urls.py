@@ -30,5 +30,6 @@ urlpatterns = [
     path("RemoveStructure", views.delete_structure),
     path("SearchUniverse", views.search_universe),
     path("SearchCorps", views.search_corps),
-    path("SearchStructure", views.search_structure)
+    path("SearchStructure", views.search_structure),
+    path("GetPOSTypes", views.pos_types)
 ]

@@ -2,6 +2,9 @@
     'High Power', 'Medium Power', 'Low Power', 'Rig Slot', 'Service Slot', 'Fighters'
 ];
 
+const POS_TYPE = 12
+const ONLINE_TYPES = ['Force Field']
+
 export default {
     template: '#structure-add-registry',
     props: ['structure_id'],
@@ -21,8 +24,10 @@ export default {
             nextVuln: null,
             nextVulnDate: null,
             fit: null,
+            posOnline: false,
             showError: false,
-            errors: []
+            errors: [],
+            posTypes: []
         };
     },
     watch: {
@@ -72,19 +77,34 @@ export default {
         loadTypes: function () {
             var self = this;
 
-            $.get('GetStructureTypes?', function (data) {
+            $.get('GetStructureTypes', function (data) {
                 self.structureTypes = data;
             });
-        },
-        systemChanged: function (system) {
-            this.systemId = system.id;
+
+            $.get('GetPOSTypes', function (data) {
+                self.posTypes = data;
+            });
+
         },
         loadPlanets: function () {
             var me = this;
             $.get('GetPlanets?solarSystemID=' + this.systemId, function (data) {
                 me.planets = data;
             });
-        },               
+        },
+        loadStructure: function () {
+            var self = this;
+            $.get('GetStructure?structureID=' + this.structure_id, function (data) {
+                self.structureName = data.structure_name;
+                self.structureType = data.structure_type_id;
+                self.corporationName = data.corporation;
+                self.structVuln = data.vulnerability;
+                self.posOnline = data.pos_online;
+            });
+        },        
+        systemChanged: function (system) {
+            this.systemId = system.id;
+        },                       
         onStructureNameInput: function () {
             var name = _.trim(this.structureName).replace(/\s+/g, ' ');
             if (name.slice(-1) === ')') {
@@ -108,15 +128,6 @@ export default {
                     this.structureType = 21;
                 }
             }
-        },
-        loadStructure: function () {
-            var self = this;
-            $.get('GetStructure?structureID=' + this.structure_id, function (data) {
-                self.structureName = data.structure_name;
-                self.structureType = data.structure_type_id;
-                self.corporationName = data.corporation;
-                self.structVuln = data.vulnerability;
-            });
         },
         parseVulnerability: function() {
             if(this.structVulnText) {
@@ -144,44 +155,83 @@ export default {
             var fitItems = {};
             var currGroup = null;
 
+            // reset POS flag
+            this.posOnline = false;            
+
             var $that = this;
             _.each(names, function (name) {
 
-                // trim leading and trailing whitespace on the line and multiple spaces to one space
-                name = _.trim(name).replace(/\s+/g, ' ');
                 var num = 1;
 
                 if (name === '')
                     return;
 
-                // match pre-number
-                var res = name.match(/^\d?[,]?\d+x /);
+                // check if we're parsing POS
+                if(name.includes('\t') && name.split('\t').length == 4)
+                {
+                    var row = name.split('\t');
+                    var id = parseInt(row[0]);
+                    var itemName = row[2];
+                    var itemGroup = row[1];                    
 
-                // if no number don't find and add
-                if (res != null && res.length == 1) {
-                    name = name.replace(res[0], '');
-                    num = res[0].replace(/,/g, '').replace('x ', ''); // this is to get the multiplier
-                }
+                    // look up item in POS list
+                    var item = _.find($that.posTypes, function(t) { return t.id == id; });
 
-                // check if grouping first, otherwise a fit item
-                if (_.findIndex(fit_groups, function (item) { return item.toLowerCase() === name.toLowerCase(); }) > -1) {
-                    currGroup = name;
-                    fitItems[currGroup] = [];
+                    // handle special fields
+                    if(ONLINE_TYPES.includes(itemName)) {
+                        $that.posOnline = true;                    
+                    }
+                    else if(item) {
+                        itemName = item.name;
+                        itemGroup = item.group;
+                    }
+                    else
+                        return;  // don't process items not in POS list
+
+                    if(fitItems[itemGroup] == null)
+                        fitItems[itemGroup] = []
+
+                    var fItem = _.find(fitItems[itemGroup], function (item) { return item.name == itemName });
+
+                    if (fItem != null)
+                        fItem.multiplier = fItem.multiplier + num;
+                    else
+                        fitItems[itemGroup].push({ name: itemName, id: null, multiplier: num });
+                    
                 }
                 else {
-                    // if already in list increment
-                    var fItem2 = _.find(fitItems[currGroup], function (item) { return item.name == name });
 
-                    // if exists increment
-                    if (fItem2 != null)
-                        fItem2.multiplier = fItem2.multiplier + num;
-                    else
-                        fitItems[currGroup].push({ name: name, id: null, multiplier: num });
+                    // trim leading and trailing whitespace on the line and multiple spaces to one space
+                    name = _.trim(name).replace(/\s+/g, ' ');
+
+                    // match pre-number
+                    var res = name.match(/^\d?[,]?\d+x /);
+
+                    // if no number don't find and add
+                    if (res != null && res.length == 1) {
+                        name = name.replace(res[0], '');
+                        num = res[0].replace(/,/g, '').replace('x ', ''); // this is to get the multiplier
+                    }
+
+                    // check if grouping first, otherwise a fit item
+                    if (_.findIndex(fit_groups, function (item) { return item.toLowerCase() === name.toLowerCase(); }) > -1) {
+                        currGroup = name;
+                        fitItems[currGroup] = [];
+                    }
+                    else {
+                        // if already in list increment
+                        var fItem2 = _.find(fitItems[currGroup], function (item) { return item.name == name });
+
+                        // if exists increment
+                        if (fItem2 != null)
+                            fItem2.multiplier = fItem2.multiplier + num;
+                        else
+                            fitItems[currGroup].push({ name: name, id: null, multiplier: num });
+                    }
                 }
 
             });
 
-            //console.log(fitItems);
             this.fit = fitItems;
 
         },       
@@ -220,7 +270,8 @@ export default {
                     next_vulnerability_date: nextVulnISODate,
                     fit: fitEncoded,
                     system_id: this.systemId,
-                    planet: this.planet
+                    planet: this.planet,
+                    pos_online: (this.structureType == POS_TYPE ? (this.posOnline ? 1 : 0) : 0)
                 },
                 dataType: "json",
                 headers: ajaxHeaders

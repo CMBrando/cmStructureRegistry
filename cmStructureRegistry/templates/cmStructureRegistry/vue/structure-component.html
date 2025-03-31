@@ -131,7 +131,8 @@
                     <span v-bind:class="{ 'vuln-tooltip': (structure.next_vulnerability != null), 'text-warning': (structure.next_vulnerability != null) }" :updated="getVulnTooltip(structure)">[[ structure.vulnerability ]]</span>
                 </div>
                 <div style="width:125px">
-                    <span v-if="structure.timer_datetime" class="st-tooltip" v-bind:class="{ 'status-tooltip': structure.timer_datetime }" :timer="structure.timer_datetime">[[ structure.timer_type ]]</span>
+                    <span v-if="structure.timer_datetime == null && structure.structure_type_id == pos_type">[[ (structure.pos_online ? 'ONLINE' : 'OFFLINE') ]]</span>
+                    <span v-if="structure.timer_datetime" class="st-tooltip" v-bind:class="{ 'status-tooltip': structure.timer_datetime }" :timer="structure.timer_datetime">[[ (structure.structure_type_id == pos_type ? 'REINFORCED' : structure.timer_type)  ]]</span>
                     <span v-if="structure.timer_type === 'REMOVED'">[[ structure.timer_type ]]</span>
                 </div>
                 <div style="width:150px">

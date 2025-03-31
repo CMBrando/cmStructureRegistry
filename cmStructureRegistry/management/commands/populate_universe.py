@@ -7,6 +7,7 @@ from cmStructureRegistry.models import Region
 from cmStructureRegistry.models import Constellation
 from cmStructureRegistry.models import SolarSystem
 from cmStructureRegistry.models import SolarSystemJump
+from cmStructureRegistry.models import POSType
 
 class Command(BaseCommand):
     help = 'Populate Region, Constellation and Solar Systems'
@@ -81,5 +82,19 @@ class Command(BaseCommand):
                     }
                 )
 
+        file_path = os.path.join(current_directory, 'data', 'pos_types.txt')                
+
+        # Process POS Types
+        with open(file_path, newline='') as file:
+            reader = csv.reader(file, delimiter="\t")
+            for item in reader:
+
+                postype, created = POSType.objects.update_or_create(
+                    id=int(item[0]),
+                    defaults = {
+                        'name': item[1],
+                        'group': item[2]
+                    }
+                )
 
 
