@@ -33,7 +33,7 @@
             <label>Corporation / Ticker</label>
             <input type="text" v-model="corporationName" style="width:300px" />
         </div>
-        <div v-if="structure_id != null && structureType === 12" class="form-group">
+        <div v-if="structureType === 12" class="form-group">
             <label>POS Online</label>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" v-model="posOnline">
