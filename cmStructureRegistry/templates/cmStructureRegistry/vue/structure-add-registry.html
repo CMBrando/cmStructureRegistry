@@ -47,13 +47,13 @@
                 <input class="form-check-input" type="checkbox" v-model="posOnline">
               </div>            
         </div>        
-        <div v-if="!(structureType && structureType == 12)" class="form-group">
+        <div v-if="!(structureType && (structureType == 12 || structureType == 21))" class="form-group">
             <label>Vulnerability</label>
             <select v-model="structVuln" style="padding:5px">
                 <option v-for="opt in vulnList" :value="opt">[[ opt ]]</option>
             </select>           
         </div>
-        <div v-if="!(structureType && structureType == 12)" class="form-group">
+        <div v-if="!(structureType && (structureType == 12 || structureType == 21))" class="form-group">
             <label>Vulnerability Text <i class="fa-solid fa-circle-question" title="Right click Hacking Result text and select 'Copy'"></i></label>
             <textarea v-model="structVulnText" v-on:input="parseVulnerability" style="width:380px;height:100px; padding: 5px" placeholder="Optional...Paste in Vulnerability...."></textarea>            
             <div v-if="structVulnText">
@@ -62,7 +62,7 @@
                     <div>Next Date: <b>[[ nextVulnDate ]]</b></div>
             </div>            
         </div>
-        <div class="form-group">
+        <div v-if="structureType != 21" class="form-group">
             <label>Structure Fit</label>
             <textarea v-model="fitText" v-on:input="parseFits" style="width:380px;height:100px; padding: 5px" placeholder="Optional...Paste in Eve Structure Scan or POS DSCAN...."></textarea>
             <div style="font-size: .7em">
