@@ -3,7 +3,16 @@
 ];
 
 const POS_TYPE = 12
+const MERC_DEN_TYPE = 21
 const ONLINE_TYPES = ['Force Field']
+
+const ROMAN_NUMERALS = [
+    "I", "II", "III", "IV", "V",
+    "VI", "VII", "VIII", "IX", "X",
+    "XI", "XII", "XIII", "XIV", "XV",
+    "XVI", "XVII", "XVIII", "XIX", "XX",
+    "XXI", "XXII", "XXIII", "XXIV", "XXV"
+]
 
 export default {
     template: '#structure-add-registry',
@@ -13,9 +22,11 @@ export default {
             structureName: '',
             structureType: '',
             structureTypes: [],
-            systemId: null, // for merc den
-            planet: null, // for merc den
-            planets: [], // for merc den    
+            systemId: null, // for merc den, POS
+            planet: null, // for merc den, POS
+            planets: [], // for merc den, POS
+            moon: null, // for POS
+            moons: [], // for POS
             corporationName: null,
             fitText: null,
             vulnList: null,
@@ -27,7 +38,8 @@ export default {
             posOnline: false,
             showError: false,
             errors: [],
-            posTypes: []
+            posTypes: [],
+            systemName: null
         };
     },
     watch: {
@@ -90,7 +102,19 @@ export default {
             var me = this;
             $.get('GetPlanets?solarSystemID=' + this.systemId, function (data) {
                 me.planets = data;
+                me.planetChanged();
             });
+        },
+        planetChanged: function() {
+            var $that = this;
+            this.moon = null;
+            var item = _.find(this.planets, function(p) { return p.name == $that.planet; });
+            if(item && item.moon_count > 0) {
+                $that.moons = Array.from({ length: item.moon_count }, (_, i) => `Moon ${i + 1}`);
+           }
+            else {
+                $that.moons = [];
+            }
         },
         loadStructure: function () {
             var self = this;
@@ -100,6 +124,14 @@ export default {
                 self.corporationName = data.corporation;
                 self.structVuln = data.vulnerability;
                 self.posOnline = data.pos_online;
+                self.systemId = data.solar_system_id;
+                self.systemName = data.solar_system;
+
+                if(self.structureType == POS_TYPE || self.structureType == MERC_DEN_TYPE) {
+                    self.loadPlanets();
+                    self.loadDataFromName();
+                }
+                    
             });
         },        
         systemChanged: function (system) {
@@ -129,6 +161,32 @@ export default {
                 }
             }
         },
+        loadDataFromName: function() {
+
+            var regex = /\(([A-Z0-9\-]+)\s+(I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|XIII|XIV|XV|XVI|XVII|XVIII|XIX|XX|XXI|XXII|XXIII|XXIV|XXV)(?:\s+-\s+(Moon\s+(?:[1-9]|1[0-9]|2[0-5])))?\)/;
+            var name = this.structureName;
+
+            const match = name.match(regex)
+            if(match) {
+                var solarSystem = match[1];
+                var numeral = match[2];
+                var moon = match[3];
+
+                if(solarSystem) {
+                    this.structureName = _.trim(name.substring(0, name.indexOf("(")));
+                }
+
+                if(numeral) {
+                    var index = ROMAN_NUMERALS.indexOf(numeral);
+                    this.planet = "Planet " + (index + 1);
+                }
+
+                if(moon) {
+                    var me = this;
+                    setTimeout(function() { me.moon = moon; }, 100);
+                }
+            }
+        },      
         parseVulnerability: function() {
             if(this.structVulnText) {
                 var lines = this.structVulnText.split('\n');            
@@ -271,6 +329,7 @@ export default {
                     fit: fitEncoded,
                     system_id: this.systemId,
                     planet: this.planet,
+                    moon: this.moon,
                     pos_online: (this.structureType == POS_TYPE ? (this.posOnline ? 1 : 0) : 0)
                 },
                 dataType: "json",

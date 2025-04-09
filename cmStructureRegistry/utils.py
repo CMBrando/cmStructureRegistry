@@ -22,7 +22,8 @@ ROMAN_NUMERALS = [
         "I", "II", "III", "IV", "V",
         "VI", "VII", "VIII", "IX", "X",
         "XI", "XII", "XIII", "XIV", "XV",
-        "XVI", "XVII", "XVIII", "XIX", "XX"
+        "XVI", "XVII", "XVIII", "XIX", "XX",
+        "XXI", "XXII", "XXIII", "XXIV", "XXV"
     ]
 
 JUMP_KEY_CACHE = 172800

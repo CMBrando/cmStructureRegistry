@@ -42,6 +42,12 @@
             showClear: this.enableClearOption && this.search
         };
     },
+    watch: {
+        initSystem: function() {
+            this.search = this.initSystem;
+            this.filterByUrl();
+        }
+    },
     methods: {
         onChange() {
             // Let's warn the parent that a change was made

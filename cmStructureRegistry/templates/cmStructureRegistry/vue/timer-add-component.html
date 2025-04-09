@@ -38,8 +38,8 @@
             <label>Planet</label>
             <select v-model="planet">
                 <option value=""></option>
-                <option v-for="p in planets" v-bind:value="p">
-                    [[ p ]]
+                <option v-for="p in planets" v-bind:value="p.name">
+                    [[ p.name ]]
                 </option>
             </select>
         </div>

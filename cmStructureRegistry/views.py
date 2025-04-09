@@ -68,6 +68,7 @@ ANSIBLEX_STRUCTURE_TYPE = 7
 POCO_STRUCTURE_TYPE = 18
 SKYHOOK_STRUCTURE_TYPE = 19
 MERC_STRUCTURE_TYPE = 21
+POS_TYPE = 12
 
 ARMOR_TYPE = 1
 HULL_TIMER = 2
@@ -173,7 +174,12 @@ def search_regions(request):
 def get_planets(request):
     system_id = request.GET.get('solarSystemID', '')
     system_data = get_system_api_info(system_id)
-    items = list([f'Planet {i+1}' for i in range(len(system_data['planets']))])
+
+    items = []
+    for i, item in enumerate(system_data['planets']):
+        entry = { "name": f'Planet {i+1}', "moon_count": (len(item['moons']) if item['moons'] else 0) }
+        items.append(entry)
+
     return JsonResponse(items, safe=False) 
 
 
@@ -409,8 +415,9 @@ def save_structure(request):
             vulnerability = form.data['vulnerability']
             next_vulnerability = form.data['next_vulnerability']
             next_vulnerability_date = form.data['next_vulnerability_date']
-            system_id = form.data['system_id'] # for merc den
-            planet = form.data['planet'] # for merd den
+            system_id = form.data['system_id'] # for merc den or POS
+            planet = form.data['planet'] # for merd den or POS
+            moon = form.data['moon'] # for POS
             pos_online = form.data['pos_online']
 
             corp_result = corporation_lookup(corporation_name)
@@ -430,7 +437,7 @@ def save_structure(request):
                 solar_system_name = ""    
 
                 # check for special parsing on POCO, Skyhook and Mercenary Den
-                if index == -1 and int(structure_type_id) in [POCO_STRUCTURE_TYPE, SKYHOOK_STRUCTURE_TYPE, MERC_STRUCTURE_TYPE]:
+                if index == -1 and int(structure_type_id) in [POCO_STRUCTURE_TYPE, SKYHOOK_STRUCTURE_TYPE, MERC_STRUCTURE_TYPE, POS_TYPE]:
                     pattern = r"\(([^)]+)\)|\[([^\]]+)\]"
                     matches = re.findall(pattern, structure_name)
                     results = [match[0] or match[1] for match in matches] 
@@ -442,25 +449,30 @@ def save_structure(request):
                     elif len(results) == 1:
                         index = results[0].rfind(" ")
                         solar_system_name = results[0][0:index].strip()
-                    elif not structure_id and structure_type_id == MERC_STRUCTURE_TYPE:
-                        solar_system_name = None  # do nothing when adding a merc, additional logic below
+                    elif (structure_type_id == MERC_STRUCTURE_TYPE or structure_type_id == POS_TYPE):
+                        solar_system_name = None  # do nothing when adding a merc/pos, additional logic below
                     else:
                         msgs.append("Could not identify Solar System from Structure Name")
                 else:
                     solar_system_name = structure_name[0:index].strip()
 
-                # handle merc den if adding structure
-                if not structure_id and structure_type_id == MERC_STRUCTURE_TYPE and (not system_id or not planet):
+                if (structure_type_id == MERC_STRUCTURE_TYPE) and (not system_id or not planet):
                     msgs.append("System and Planet are required for Mercenary Den")
                     return JsonResponse({ 'success': success, 'messages': msgs })
-                elif not structure_id and structure_type_id == MERC_STRUCTURE_TYPE:
+                if (structure_type_id == POS_TYPE) and (not system_id or not planet or not moon):
+                    msgs.append("System, Planet and Moon are required for POS")
+                    return JsonResponse({ 'success': success, 'messages': msgs })
+                elif (structure_type_id == MERC_STRUCTURE_TYPE or structure_type_id == POS_TYPE):
                     system_result = get_system_api_info(system_id)
                     if system_result:
                         solar_system_name = system_result['name']
                         planet_num = planet[-1 * (len(planet) - planet.rfind(' ')):] # planet X
                         roman_planet = get_roman_numeral(planet_num)
-                        structure_name = f"{structure_name} ({solar_system_name} {roman_planet})"
 
+                        if(moon):
+                            structure_name = f"{structure_name} ({solar_system_name} {roman_planet} - {moon})"
+                        else:
+                            structure_name = f"{structure_name} ({solar_system_name} {roman_planet})"
 
                 if solar_system_name or system_id: 
 

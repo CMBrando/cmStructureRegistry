@@ -33,6 +33,7 @@ class StructureRegistryForm(forms.ModelForm):
     fit = forms.CharField(max_length=8000, required=False)
     system_id = forms.IntegerField(required=False)
     planet = forms.CharField(max_length=8000, required=False)
+    moon = forms.CharField(max_length=8000, required=False)
 
     class Meta:
         model = StructureRegistry

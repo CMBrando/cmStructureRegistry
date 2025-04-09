@@ -16,19 +16,27 @@
                 </option>
             </select>
         </div>
-        <div v-if="structure_id == null && structureType === 21" class="form-group">
+        <div v-if="(structureType === 21 || structureType == 12)" class="form-group">
             <label>System</label>
-            <system-picker ref="system" :isAsync="true" :minChars="2" :enableClearOption="false" :placeholder="'Search for a System...'" v-on:item-selected="systemChanged"></system-picker>
+            <system-picker ref="system" :isAsync="true" :minChars="2" :enableClearOption="false" :initSystem="systemName" :placeholder="'Search for a System...'" v-on:item-selected="systemChanged"></system-picker>
         </div>        
-        <div v-if="structure_id == null && structureType === 21" class="form-group">
+        <div v-if="(structureType === 21 || structureType == 12)" class="form-group">
             <label>Planet</label>
-            <select v-model="planet">
+            <select v-model="planet" v-on:change="planetChanged">
                 <option value=""></option>
-                <option v-for="p in planets" v-bind:value="p">
-                    [[ p ]]
+                <option v-for="p in planets" v-bind:value="p.name">
+                    [[ p.name ]]
                 </option>
             </select>
-        </div>        
+        </div>
+        <div v-if="structureType == 12" class="form-group">
+            <label>Moon</label>
+            <select v-model="moon">
+                <option v-for="m in moons" v-bind:value="m">
+                    [[ m ]]
+                </option>
+            </select>
+        </div>                
         <div class="form-group">
             <label>Corporation / Ticker</label>
             <input type="text" v-model="corporationName" style="width:300px" />
