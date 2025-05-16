@@ -15,6 +15,12 @@ const HostilityTypes = {
     FRIENDLY: 2
 }
 
+const PERM_TYPE = {
+    PUBLIC: 0,
+    SKIRMISH: 1,
+    TACTICAL: 2
+}
+
 export default {
     template: '#timer-component',
     data: function () {
@@ -27,7 +33,7 @@ export default {
             staging_system: this.stagingSystemId
         };
     },
-    props: ['type', 'admin', 'add', 'edit', 'stagingSystemId'],
+    props: ['type', 'admin', 'add', 'edit', 'addlTimerPerm', 'stagingSystemId'],
     mounted: function () {
         this.loadData();
     },
@@ -151,7 +157,26 @@ export default {
             }
             else
                 return 'N/A'
-        }
+        },
+        timerPermissionClass: function(timer_perm_id) {
+
+            if(timer_perm_id == PERM_TYPE.SKIRMISH)
+                return 'text-skirmish';
+            else if(timer_perm_id == PERM_TYPE.TACTICAL)
+                return 'text-tactical';
+            else
+                return 'text-primary';
+
+        },
+        timerPermissionText: function(timer_perm_id) {
+            if(timer_perm_id == PERM_TYPE.SKIRMISH)
+                return 'Skirmish';
+            else if(timer_perm_id == PERM_TYPE.TACTICAL)
+                return 'Tactical';
+            else
+                return 'Public';
+            
+        }        
     }
 }
 

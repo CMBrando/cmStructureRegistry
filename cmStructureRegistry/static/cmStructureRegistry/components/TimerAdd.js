@@ -10,6 +10,8 @@
             structureType: '',
             hostilityTypes: [],
             hostilityType: 1,
+            permissionTypes: [],
+            permissionType: 0,
             comment: '',
             showError: false,
             errors: [],
@@ -67,6 +69,10 @@
             $.get('GetHostilityTypes', function (data) {
                 self.hostilityTypes = data;
             });
+
+            $.get('GetPermissionTypes', function (data) {
+                self.permissionTypes = data;
+            });            
         },
         loadStructure: function () {
 
@@ -265,7 +271,8 @@
                     structure_type_id: this.structureType === '' ? null : this.structureType,
                     hostility_type_id: this.hostilityType,
                     structure_id: this.structureID,
-                    planet: this.planet
+                    planet: this.planet,
+                    timer_permission_id: this.permissionType
                 },
                 dataType: "json",
                 headers: ajaxHeaders

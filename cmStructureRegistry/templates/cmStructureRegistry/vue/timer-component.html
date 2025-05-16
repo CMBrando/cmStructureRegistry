@@ -16,6 +16,13 @@
                         <i class="fa fa-sort-down" v-if="showSortIcon('timer_type_name', 'desc')"></i>
                     </span>
                 </div>
+                <div v-if="addlTimerPerm" style="width:100px">
+                    <span v-on:click="toggleSort('timer_permission_id')" v-bind:class="{ focused: isSortProp('timer_permission_id') }">
+                        Level
+                        <i class="fa fa-sort-up" v-if="showSortIcon('timer_permission_id', 'asc')"></i>
+                        <i class="fa fa-sort-down" v-if="showSortIcon('timer_permission_id', 'desc')"></i>
+                    </span>
+                </div>                
                 <div style="width:100px">
                     <span v-on:click="toggleSort('structure_type')" v-bind:class="{ focused: isSortProp('structure_type') }">
                         Type
@@ -74,6 +81,9 @@
                 <div style="width:125px">
                     [[ timer.timer_type_name ]]
                 </div>
+                <div v-if="addlTimerPerm" style="width:100px">
+                    <i :class="['fa', 'fa-circle', 'timer-level-icon', timerPermissionClass(timer.timer_permission_id)]" :title="timerPermissionText(timer.timer_permission_id)"></i>
+                </div>                                
                 <div style="width:100px">
                     [[ timer.structure_type ]]
                 </div>

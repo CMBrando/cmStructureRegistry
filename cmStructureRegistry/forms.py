@@ -7,7 +7,7 @@ from .models import StructureRegistry
 class CorpTimerForm(forms.ModelForm):
     class Meta:
         model = CorpTimer
-        fields = ['system_id', 'timer_type_id', 'timer_datetime', 'comment', 'structure_type_id', 'hostility_type_id', 'structure_type_id', 'structure_id', 'fleet_commander', 'planet']
+        fields = ['system_id', 'timer_type_id', 'timer_datetime', 'comment', 'structure_type_id', 'hostility_type_id', 'structure_type_id', 'structure_id', 'fleet_commander', 'planet', 'timer_permission_id']
         error_messages = {
             'system_id': {
                 'required': 'System is required'

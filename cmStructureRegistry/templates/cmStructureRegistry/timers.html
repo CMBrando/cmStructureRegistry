@@ -90,14 +90,14 @@
             Open Timers
         </div>
         <div>
-            <timer-component type="open" :admin="isAdmin" :add="canAdd" :edit="canEdit" :staging-system-id="staging_system" ref="openTimer" v-on:delete-timer="deleteTimer" v-on:set-fleetcommander="loadSetFC"></timer-component>
+            <timer-component type="open" :admin="isAdmin" :add="canAdd" :edit="canEdit" :addl-timer-perm="hasMorePerms" :staging-system-id="staging_system" ref="openTimer" v-on:delete-timer="deleteTimer" v-on:set-fleetcommander="loadSetFC"></timer-component>
         </div>
         <div class="spacer"></div>
         <div class="sub-header">
             Recent Timers
         </div>
         <div>
-            <timer-component type="recent" :admin="isAdmin" :add="canAdd" :edit="canEdit" ref="recentTimer" v-on:add-timer="addTimer"></timer-component>
+            <timer-component type="recent" :admin="isAdmin" :add="canAdd" :edit="canEdit" :addl-timer-perm="hasMorePerms" ref="recentTimer" v-on:add-timer="addTimer"></timer-component>
         </div>
         <div class="spacer"></div>
         <div class="spacer"></div>
@@ -165,6 +165,7 @@
                 isAdmin: {{ perms.cmStructureRegistry.delete_timer|yesno:"true,false" }},
                 canAdd: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
                 canEdit: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
+                hasMorePerms: {{ perms.cmStructureRegistry.skirmish_timer|yesno:"true,false" }} || {{ perms.cmStructureRegistry.tactical_timer|yesno:"true,false" }},
                 timerid: null,
                 curr_structure_id: null,
                 curr_fc: '',

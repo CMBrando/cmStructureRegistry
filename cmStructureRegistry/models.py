@@ -14,12 +14,13 @@ class General(models.Model):
         managed = False
         default_permissions = ()
         permissions = (
-            # can access and register his own participation to a FAT link
-            ("basic_access", ("Can view structure registry and timers")),
+            ("basic_access", ("Can view structure registry and lowest level timers")),
             ("manage_structures", ("Can add structures and set fits and vulnerabilities")),
             ("manage_timers", ("Can add timers and set FCs")),
             ("delete_structure", ("Can remove structures")),
-            ("delete_timer", ("Can delete timer"))
+            ("delete_timer", ("Can delete timer")),
+            ("skirmish_timer", ("Can view and add timers with skirmish level setting")),
+            ("tactical_timer", ("Can view and add timers with tactical level setting"))
         )
         verbose_name = ("cmStructureRegistry")
 
@@ -90,6 +91,14 @@ class TimerHostility(models.Model):
         default_permissions = ()        
         db_table = "cm_timer_hostility"
 
+class TimerPermissionType(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        default_permissions = ()        
+        db_table = "cm_timer_permission_type"        
+
 class TimerStructureType(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
@@ -111,6 +120,7 @@ class CorpTimer(models.Model):
     structure_id = models.BigIntegerField(blank=True, null=True)
     fleet_commander = models.CharField(blank=True, max_length=255, null=True)
     planet = models.CharField(blank=True, max_length=255, null=True)
+    timer_permission_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         default_permissions = ()        
@@ -194,6 +204,7 @@ class CorpTimerView(models.Model):
     structure_id = models.BigIntegerField(blank=True, null=True)
     fleet_commander = models.CharField(blank=True, max_length=255, null=True)
     structure_name = models.CharField(blank=True, max_length=255, null=True)
+    timer_permission_id = models.IntegerField(blank=False, null=False)
 
     class Meta:
         managed = False              

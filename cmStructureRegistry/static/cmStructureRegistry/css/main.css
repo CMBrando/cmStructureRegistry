@@ -221,6 +221,19 @@ input[type='button']:focus, button:focus {
     font-weight: bold;
 }
 
+.timer-level-icon {
+    margin-left: 18px;
+    cursor: default;
+}
+
+.text-skirmish {
+    color: #0d85ba;
+}
+
+.text-tactical {
+    color: #463a99;
+}
+
 /** modal css */
 
 .modal-dialog {

@@ -224,6 +224,27 @@
         }
     },
     {
+        "model": "cmStructureRegistry.TimerPermissionType",
+        "pk": 0,
+        "fields": {
+            "name": "Public"
+        }
+    },    
+    {
+        "model": "cmStructureRegistry.TimerPermissionType",
+        "pk": 1,
+        "fields": {
+            "name": "Skirmish"
+        }
+    },
+    {
+        "model": "cmStructureRegistry.TimerPermissionType",
+        "pk": 2,
+        "fields": {
+            "name": "Tactical"
+        }
+    },
+    {
         "model": "cmStructureRegistry.StructureType",
         "pk": 35825,
         "fields": {

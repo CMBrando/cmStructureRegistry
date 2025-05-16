@@ -11,6 +11,7 @@ This is a Structure Registry and Timer Board app for [Alliance Auth](https://git
 - Automatic count up after countdown based on structure type
 - When adding Timer, one can search Structure Registry 
 - Add a Timer based on EVE reinforce text from a structure
+- Different timer access levels, Public (default), Skirmish, Tactical
 
 ## Installation
 
@@ -71,6 +72,11 @@ Add Timer and set FCs:
 Remove Timer:
     *cmStructureRegistry.delete_timer*
 
+View and Add Skirmish Level Timers (requires manage_timers permission):
+    *cmStructureRegistry.skirmish_timer*
+
+View and Add Tactical Level Timers (requires manage_timers permission):
+    *cmStructureRegistry.tactical_timer*
 
 
 

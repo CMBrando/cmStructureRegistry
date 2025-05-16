@@ -15,6 +15,7 @@ urlpatterns = [
     path("GetTimerTypes", views.timer_types),
     path("GetStructureTypes", views.structure_types),   
     path("GetHostilityTypes", views.timer_hostility_types),
+    path("GetPermissionTypes", views.timer_permission_types),    
     path("SearchRegions", views.search_regions),       
     path("SearchSolarSystems", views.search_solar_systems),
     path("GetPlanets", views.get_planets),

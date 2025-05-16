@@ -30,6 +30,7 @@ from esi.models import Token
 from .models import TimerType
 from .models import TimerStructureType
 from .models import TimerHostility
+from .models import TimerPermissionType
 from .models import Region
 from .models import SolarSystem
 from .models import SolarSystemJump
@@ -75,6 +76,9 @@ HULL_TIMER = 2
 IHUB_TIMER = 8
 POCO_TYPE = 18
 
+SKIRMISH_PERM = 1
+TACTICAL_PERM = 2
+
 UNIVERSE_OFFSET = 1.0e+13
 METERS_PER_LIGHT_YEAR = 9.461e+15
 
@@ -114,6 +118,23 @@ def structure_types(request):
 @permission_required("cmStructureRegistry.basic_access")
 def timer_hostility_types(request):
     items = list(TimerHostility.objects.all().values())
+    return JsonResponse(items, safe=False)
+
+@login_required
+@permission_required("cmStructureRegistry.basic_access")
+def timer_permission_types(request):
+
+    user = request.user
+    perms = []
+    perms.append(0) # public
+
+    if user.has_perm('cmStructureRegistry.skirmish_timer'):
+        perms.append(1) # skirmish id
+
+    if user.has_perm('cmStructureRegistry.tactical_timer'):
+        perms.append(2) # tactical id
+
+    items = list(TimerPermissionType.objects.filter(id__in=perms).order_by('id').values())
     return JsonResponse(items, safe=False)
    
 @login_required
@@ -189,11 +210,19 @@ def save_timer(request):
 
     success = False
     msgs = []
+    user = request.user
 
     if request.method == 'POST':
         form = CorpTimerForm(request.POST)
 
         if form.is_valid():
+
+            # validate permissions
+            if form.cleaned_data.get('timer_permission_id') == SKIRMISH_PERM and not user.has_perm('cmStructureRegistry.skirmish_timer'):
+                return JsonResponse({'error': 'Invalid request'}, status=400)
+            
+            if form.cleaned_data.get('timer_permission_id') == TACTICAL_PERM and not user.has_perm('cmStructureRegistry.tactical_timer'):
+                return JsonResponse({'error': 'Invalid request'}, status=400)
 
             utc_now = datetime.now(pytz.utc)
             main_character = get_main_character_from_user(user=request.user)    
@@ -218,12 +247,20 @@ def save_timer(request):
 @login_required
 @permission_required("cmStructureRegistry.basic_access")
 def get_open_timers(request):
+
+    user = request.user
     current_time_utc = datetime.now(timezone.utc)
     time_60_minutes_ago = current_time_utc - timedelta(minutes=60)
 
     sel_system = request.GET.get('system')
 
     items = list(CorpTimerView.objects.filter(timer_datetime__gt=time_60_minutes_ago).values())
+
+    if not user.has_perm('cmStructureRegistry.skirmish_timer'):
+        items = [item for item in items if item.get('timer_permission_id') != SKIRMISH_PERM]
+
+    if not user.has_perm('cmStructureRegistry.tactical_timer'):
+        items = [item for item in items if item.get('timer_permission_id') != TACTICAL_PERM]
 
     if sel_system:
         for item in items:
@@ -368,7 +405,7 @@ def registry_read(request):
     if staging_system_id:
         for item in items:
             item['jumps'] = count_jumps(int(staging_system_id), item['solar_system_id'])
-            item['distance'] = calculate_lightyears(int(staging_system_id), item['solar_system_id'])    
+            item['distance'] = calculate_lightyears(int(staging_system_id), item['solar_system_id'])                
        
     return JsonResponse(items, safe=False)
           
