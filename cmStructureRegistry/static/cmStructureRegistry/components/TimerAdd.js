@@ -1,4 +1,14 @@
-﻿export default {
+﻿const STRUCTURE_TIMER_HULL_DEFAULTS = new Map([
+    [7, 2],
+    [8, 2],
+    [9, 2],
+    [20, 2],
+    [4, 1],
+    [1, 1],
+    [10, 1]
+])
+
+export default {
     template: '#timer-add-component',
     data: function () {
         return {
@@ -117,6 +127,12 @@
                 this.systemId = struct.solar_system_id;
                 this.structureID = struct.structure_id;
                 this.showSystemLookup = false;
+
+                // set based on defaults
+                var df = STRUCTURE_TIMER_HULL_DEFAULTS;
+                if(df.has(this.structureType)) {
+                    this.timerType = df.get(this.structureType);
+                }
             }
         },
         resetForm: function () {

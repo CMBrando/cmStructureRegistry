@@ -1,9 +1,19 @@
-﻿const fit_groups = ['High Power Slots', 'Medium Power Slots', 'Low Power Slots', 'Rig Slots', 'Service Slots', 'Charges',
+﻿const FIT_GROUPS = ['High Power Slots', 'Medium Power Slots', 'Low Power Slots', 'Rig Slots', 'Service Slots', 'Charges',
     'High Power', 'Medium Power', 'Low Power', 'Rig Slot', 'Service Slot', 'Fighters'
 ];
 
+const STRUCTURE_FIT_DEFAULTS = new Map([
+    [7, "Service Slots\r\nStandup Conduit Generator I"],
+    [8, "Service Slots\r\nStandup Cynosural Field Generator I"],
+    [9, "Service Slots\r\nStandup Cynosural System Jammer I"],
+    [20, "Service Slots\r\nStandup Metenox Moon Drill"]
+])
+
+
+
 const POS_TYPE = 12
 const MERC_DEN_TYPE = 21
+const ANSIBLEX_TYPE = 7
 const ONLINE_TYPES = ['Force Field']
 
 const ROMAN_NUMERALS = [
@@ -39,7 +49,8 @@ export default {
             showError: false,
             errors: [],
             posTypes: [],
-            systemName: null
+            systemName: null,
+            submitting: false
         };
     },
     watch: {
@@ -48,6 +59,9 @@ export default {
                 this.loadPlanets();
             else
                 this.planets = [];
+        },
+        structureType: function() {
+            this.structureTypeChanged()
         }
     },    
     created: function () {
@@ -116,6 +130,15 @@ export default {
                 $that.moons = [];
             }
         },
+        structureTypeChanged: function() {
+                
+                // set structure based on default
+                var sfd = STRUCTURE_FIT_DEFAULTS;
+                if(sfd.has(this.structureType)) {
+                    this.fitText = sfd.get(this.structureType);
+                    this.parseFits();
+                }
+        },
         loadStructure: function () {
             var self = this;
             $.get('GetStructure?structureID=' + this.structure_id, function (data) {
@@ -142,6 +165,9 @@ export default {
             if (name.slice(-1) === ')') {
                 this.structureName = name.substring(0, name.lastIndexOf(' ('));
                 this.corporationName = name.substring(name.lastIndexOf('(') + 1, name.length - 1);
+
+                if(this.structureName.indexOf('»') > -1)
+                    this.structureType = ANSIBLEX_TYPE;
             }
             else {            
                 var regex = /\[([^\]]+)\]/;
@@ -272,7 +298,7 @@ export default {
                     }
 
                     // check if grouping first, otherwise a fit item
-                    if (_.findIndex(fit_groups, function (item) { return item.toLowerCase() === name.toLowerCase(); }) > -1) {
+                    if (_.findIndex(FIT_GROUPS, function (item) { return item.toLowerCase() === name.toLowerCase(); }) > -1) {
                         currGroup = name;
                         fitItems[currGroup] = [];
                     }
@@ -314,6 +340,9 @@ export default {
             if(this.nextVulnDate)
                 nextVulnISODate = moment.utc(this.nextVulnDate, 'YYYY.MM.DD HH:mm').toISOString()
 
+
+            this.submitting = true;
+
             $.ajax({
                 cache: false,
                 type: 'POST',
@@ -335,6 +364,8 @@ export default {
                 dataType: "json",
                 headers: ajaxHeaders
             }).done(function (data) {
+
+                self.submitting = false;
 
                 if (data.success) {
 
