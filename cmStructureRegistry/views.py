@@ -20,6 +20,7 @@ from django.db.models import Q
 from django.utils.dateparse import parse_datetime
 
 # Alliance Auth
+from allianceauth.eveonline.models import EveCharacter
 from allianceauth.eveonline.models import EveAllianceInfo
 from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.framework.api.user import get_main_character_from_user
@@ -55,11 +56,6 @@ from .utils import get_alliance_api_info
 from .utils import solar_system_lookup
 from .utils import corporation_lookup
 from .utils import get_roman_numeral
-from .utils import get_api_notifications
-from .utils import get_api_type
-from .utils import get_api_planet
-from .utils import parse_notification
-from .utils import filetime_to_date
 from .utils import calculate_lightyears
 from .utils import count_jumps
 from cmStructureRegistry import app_settings
@@ -71,10 +67,6 @@ SKYHOOK_STRUCTURE_TYPE = 19
 MERC_STRUCTURE_TYPE = 21
 POS_TYPE = 12
 
-ARMOR_TYPE = 1
-HULL_TIMER = 2
-IHUB_TIMER = 8
-POCO_TYPE = 18
 
 SKIRMISH_PERM = 1
 TACTICAL_PERM = 2

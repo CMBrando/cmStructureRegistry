@@ -33,11 +33,8 @@ dependencies = [
 
 
 [project.urls]
-Homepage = "https://gitlab.com/ErikKalkoken/allianceauth-example-plugin"
-Documentation = "https://allianceauth-example-plugin.readthedocs.io/en/latest/"
-Source = "https://gitlab.com/ErikKalkoken/allianceauth-example-plugin"
-Changelog = "https://gitlab.com/ErikKalkoken/allianceauth-example-plugin/-/blob/master/CHANGELOG.md"
-Tracker = "https://gitlab.com/ErikKalkoken/allianceauth-example-plugin/-/issues"
+Homepage = "https://github.com/CMBrando/cmStructureRegistry"
+
 
 [tool.flit.module]
 name = "cmStructureRegistry"

@@ -121,6 +121,7 @@ class CorpTimer(models.Model):
     fleet_commander = models.CharField(blank=True, max_length=255, null=True)
     planet = models.CharField(blank=True, max_length=255, null=True)
     timer_permission_id = models.IntegerField(blank=True, null=True)
+    notification_id = models.BigIntegerField(blank=False, null=False, default=None)
 
     class Meta:
         default_permissions = ()        

@@ -63,6 +63,13 @@
         }
     },
     {
+        "model": "cmStructureRegistry.TimerType",
+        "pk": 10,
+        "fields": {
+          "name": "Entosis"
+        }
+    },   
+    {
         "model": "cmStructureRegistry.TimerStructureType",
         "pk": 1,
         "fields": {
@@ -208,7 +215,14 @@
         "fields": {
             "name": "Mercenary Den"
         }
-    },    
+    },
+    {
+        "model": "cmStructureRegistry.TimerStructureType",
+        "pk": 22,
+        "fields": {
+            "name": "Sov Hub"
+        }
+    },       
     {
         "model": "cmStructureRegistry.TimerHostility",
         "pk": 1,

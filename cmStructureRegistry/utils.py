@@ -62,12 +62,15 @@ def get_api_type(type_id):
 def get_api_planet(planet_id):
     return esi.client.Universe.get_universe_planets_planet_id(planet_id = planet_id).result()
 
-def get_api_notifications(character_id, token):
-    return esi.client.Character.get_characters_character_id_notifications(
-        character_id = character_id,
+def get_api_structure(structure_id, token):
+    return esi.client.Universe.get_universe_structures_structure_id(
+        structure_id = structure_id,
         token = token
-    ).results()
+    ).result()
     
+def get_api_sovereignty_structures():
+    return esi.client.Sovereignty.get_sovereignty_structures(
+    ).results()        
 
 def get_roman_numeral(number):
     return ROMAN_NUMERALS[int(number) - 1]
@@ -146,23 +149,6 @@ def count_jumps(start, target):
 
     return -1  # Target not reachable
 
-def parse_notification(text: str) -> dict:
-    parsed_dict = {}
-
-    lines = text.split('\n')
-    for line in lines:
-        # Skip lines with no colon to delineate name/value
-        if ':' not in line:
-            continue
-
-        name_val = line.split(':', 1)  # Limit split to 2 parts
-        name = name_val[0].strip()
-        val = name_val[1].replace("&id001", "").replace("*id001", "").strip()
-
-        if name not in parsed_dict:
-            parsed_dict[name] = val
-
-    return parsed_dict
 
 def filetime_to_date(ft):
     us = (ft - EPOCH_AS_FILETIME) // 10

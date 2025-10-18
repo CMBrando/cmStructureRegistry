@@ -12,6 +12,7 @@ This is a Structure Registry and Timer Board app for [Alliance Auth](https://git
 - When adding Timer, one can search Structure Registry 
 - Add a Timer based on EVE reinforce text from a structure
 - Different timer access levels, Public (default), Skirmish, Tactical
+- Optional background task to create friendly timers (requires corptools and importing of notifications)
 
 ## Installation
 
@@ -78,7 +79,11 @@ View and Add Skirmish Level Timers (requires manage_timers permission):
 View and Add Tactical Level Timers (requires manage_timers permission):
     *cmStructureRegistry.tactical_timer*
 
+## Friendly Timers
 
+There is an optional feature that requires the corptools dependency.  It queries notifications and creates friendly timers.
+
+To enable, create an Alliance Auth periodic task that runs the shared task: *cmStructureRegistry.tasks.notification_timer_task*
 
 
 
