@@ -36,6 +36,8 @@ try:
 except ImportError:
     CORPTOOLS_DEP = False
 
+from cmStructureRegistry import app_settings
+
 
 logger = get_extension_logger(__name__)
 
@@ -74,8 +76,8 @@ def notification_timer_task():
                 .annotate(
                     rn=Window(
                         expression=RowNumber(),
-                        partition_by=[F("notification_id")],
-                        order_by=F("character_id").asc(),
+                        partition_by=[F("timestamp")],
+                        order_by=[F("notification_id").asc(), F("character_id").asc()]
                     )
                 )
                 .filter(rn=1)
@@ -106,6 +108,11 @@ def notification_timer_task():
                         item = yaml.safe_load(not_entry.notification_text)
 
                         char = EveCharacter.objects.get(pk=notification.character_id)
+
+                        # if there is a filter defined for corps check it.
+                        if hasattr(app_settings, 'FRIENDLY_TIMER_CORP_IDS'):
+                            if char.corporation_id not in app_settings.FRIENDLY_TIMER_CORP_IDS:
+                                continue
 
                         if not access_token:
                             token_res = Token.get_token(char.character_id, scopes=[
