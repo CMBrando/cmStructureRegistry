@@ -1,0 +1,6 @@
+recursive-include cmStructureRegistry/templates *
+recursive-include cmStructureRegistry/static *
+recursive-include cmStructureRegistry/management/commands/data *
+recursive-include cmStructureRegistry/fixtures *
+include README.md
+include LICENSE

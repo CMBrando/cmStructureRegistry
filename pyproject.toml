@@ -11,6 +11,7 @@ requires-python = ">=3.8"
 authors = [
     { name = "CMBrando", email = "CMBrando999@gmail.com" },
 ]
+keywords = ["allianceauth", "django", "eveonline", "structure", "recon"]
 classifiers = [
     "Environment :: Web Environment",
     "Framework :: Django",
@@ -31,9 +32,13 @@ dependencies = [
     "allianceauth>=3",
 ]
 
+[tool.setuptools]
+include-package-data = true
+
 
 [project.urls]
 Homepage = "https://github.com/CMBrando/cmStructureRegistry"
+Issues = "https://github.com/CMBrando/cmStructureRegistry/issues"
 
 
 [tool.flit.module]
