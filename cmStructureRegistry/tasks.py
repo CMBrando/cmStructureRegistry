@@ -110,7 +110,7 @@ def notification_timer_task():
                         char = EveCharacter.objects.get(pk=notification.character_id)
 
                         # if there is a filter defined for corps check it.
-                        if hasattr(app_settings, 'FRIENDLY_TIMER_CORP_IDS'):
+                        if app_settings.FRIENDLY_TIMER_CORP_IDS:
                             if char.corporation_id not in app_settings.FRIENDLY_TIMER_CORP_IDS:
                                 continue
 
