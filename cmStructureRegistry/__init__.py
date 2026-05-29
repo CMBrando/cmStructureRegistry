@@ -3,4 +3,4 @@
 # pylint: disable = invalid-name
 default_app_config = "cmStructureRegistry.apps.DefaultConfig"
 
-__version__ = "0.9951"
+__version__ = "1.0.0"

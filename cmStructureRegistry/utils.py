@@ -4,7 +4,7 @@ import json
 import pickle
 from collections import deque
 from datetime import datetime, timedelta
-from esi.clients import EsiClientProvider
+from esi.openapi_clients import ESIClientProvider
 from django.conf import settings
 from allianceauth.utils.cache import get_redis_client
 from allianceauth.services.hooks import get_extension_logger
@@ -15,7 +15,11 @@ from .models import SolarSystemJump
 from .models import SolarSystem
 
 logger = get_extension_logger(__name__)
-esi = EsiClientProvider(app_info_text=f"{apps.DefaultConfig.verbose_name} v{app_settings.CM_VERSION}")
+esi = ESIClientProvider(
+    compatibility_date="2020-01-01",
+    ua_appname=apps.DefaultConfig.verbose_name,
+    ua_version=app_settings.CM_VERSION,
+)
 
 EPOCH_AS_FILETIME = 116444736000000000
 ROMAN_NUMERALS = [

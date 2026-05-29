@@ -28,8 +28,9 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]
+
 dependencies = [
-    "allianceauth>=3",
+    "allianceauth>=5.0,<6.0",
 ]
 
 [tool.setuptools]
