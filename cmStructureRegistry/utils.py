@@ -19,6 +19,15 @@ esi = ESIClientProvider(
     compatibility_date="2020-01-01",
     ua_appname=apps.DefaultConfig.verbose_name,
     ua_version=app_settings.CM_VERSION,
+    operations=[
+        "GetUniverseSystemsSystemId",
+        "PostUniverseIds",
+        "GetCorporationsCorporationId",
+        "GetAlliancesAllianceId",
+        "GetUniversePlanetsPlanetId",
+        "GetUniverseStructuresStructureId",
+        "GetSovereigntyStructures",
+    ] 
 )
 
 EPOCH_AS_FILETIME = 116444736000000000
