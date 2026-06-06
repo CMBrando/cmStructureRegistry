@@ -24,6 +24,7 @@ esi = ESIClientProvider(
         "PostUniverseIds",
         "GetCorporationsCorporationId",
         "GetAlliancesAllianceId",
+        "GetUniverseTypesTypeId",
         "GetUniversePlanetsPlanetId",
         "GetUniverseStructuresStructureId",
         "GetSovereigntyStructures",
@@ -45,45 +46,47 @@ METERS_PER_LIGHT_YEAR = 9.461e+15
 
 
 def get_system_api_info(system_id):
-    return esi.client.Universe.get_universe_systems_system_id(system_id=system_id).results()
+    return esi.client.Universe.GetUniverseSystemsSystemId(system_id=system_id).result(use_etag=False)
 
 def solar_system_lookup(solar_system_name):
-    result = esi.client.Universe.post_universe_ids(names=[solar_system_name]).results()
-    systems = result.get('systems',[])
+    result = esi.client.Universe.PostUniverseIds(body=[solar_system_name]).results(use_etag=False)
+    systems = result[0].systems if result else None
+
     if systems and len(systems) == 1:
         return systems[0]
-    else:
-        return None
+
+    return None
 
 def corporation_lookup(corporation_name):
-    result = esi.client.Universe.post_universe_ids(names=[corporation_name]).results()
-    systems = result.get('corporations',[])
-    if systems and len(systems) == 1:
-        return systems[0]
-    else:
-        return None
+    result = esi.client.Universe.PostUniverseIds(body=[corporation_name]).results(use_etag=False)
+    corporations = result[0].corporations if result else None
+
+    if corporations and len(corporations) == 1:
+        return corporations[0]
+
+    return None
 
 def get_corporation_api_info(corporation_id):
-    return esi.client.Corporation.get_corporations_corporation_id(corporation_id=corporation_id).result()       
+    return esi.client.Corporation.GetCorporationsCorporationId(corporation_id=corporation_id).result(use_etag=False)       
 
 def get_alliance_api_info(alliance_id):
-    return esi.client.Alliance.get_alliances_alliance_id(alliance_id=alliance_id).result()
+    return esi.client.Alliance.GetAlliancesAllianceId(alliance_id=alliance_id).result(use_etag=False)
 
 def get_api_type(type_id):
-    return esi.client.Universe.get_universe_types_type_id(type_id=type_id).result()
+    return esi.client.Universe.GetUniverseTypesTypeId(type_id=type_id).result(use_etag=False)
 
 def get_api_planet(planet_id):
-    return esi.client.Universe.get_universe_planets_planet_id(planet_id = planet_id).result()
+    return esi.client.Universe.GetUniversePlanetsPlanetId(planet_id = planet_id).result(use_etag=False)
 
 def get_api_structure(structure_id, token):
-    return esi.client.Universe.get_universe_structures_structure_id(
+    return esi.client.Universe.GetUniverseStructuresStructureId(
         structure_id = structure_id,
         token = token
-    ).result()
+    ).result(use_etag=False)
     
 def get_api_sovereignty_structures():
-    return esi.client.Sovereignty.get_sovereignty_structures(
-    ).results()        
+    return esi.client.Sovereignty.GetSovereigntyStructures(
+    ).results(use_etag=False)        
 
 def get_roman_numeral(number):
     return ROMAN_NUMERALS[int(number) - 1]

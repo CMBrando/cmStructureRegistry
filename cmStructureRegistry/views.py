@@ -189,8 +189,8 @@ def get_planets(request):
     system_data = get_system_api_info(system_id)
 
     items = []
-    for i, item in enumerate(system_data['planets']):
-        entry = { "name": f'Planet {i+1}', "moon_count": (len(item['moons']) if item['moons'] else 0) }
+    for i, item in enumerate(system_data.planets):
+        entry = { "name": f'Planet {i+1}', "moon_count": (len(item.moons) if item.moons else 0) }
         items.append(entry)
 
     return JsonResponse(items, safe=False) 
@@ -494,7 +494,7 @@ def save_structure(request):
                 elif (structure_type_id == MERC_STRUCTURE_TYPE or structure_type_id == POS_TYPE):
                     system_result = get_system_api_info(system_id)
                     if system_result:
-                        solar_system_name = system_result['name']
+                        solar_system_name = system_result.name
                         planet_num = planet[-1 * (len(planet) - planet.rfind(' ')):] # planet X
                         roman_planet = get_roman_numeral(planet_num)
 
@@ -511,8 +511,8 @@ def save_structure(request):
                         registry = form.instance
                         registry.structure_id = structure_id if structure_id else int('9' + ''.join([str(random.randint(0, 9)) for _ in range(12)])) # if new structure generate a random id
                         registry.structure_name = structure_name
-                        registry.solar_system_id = system_result['id'] if system_result else system_id
-                        registry.corporation_id = corp_result['id']
+                        registry.solar_system_id = system_result.id if system_result else system_id
+                        registry.corporation_id = corp_result.id
                         registry.pos_online = pos_online
                         registry.removed = False
 
@@ -520,25 +520,25 @@ def save_structure(request):
                         corp_api_result = get_corporation_api_info(registry.corporation_id)
 
                         eve_alliance = None
-                        alliance_id = corp_api_result.get('alliance_id')
+                        alliance_id = corp_api_result.alliance_id
                         if alliance_id:
                             alliance_api_result = get_alliance_api_info(alliance_id)
                             eve_alliance, created = EveAllianceInfo.objects.update_or_create(
                             alliance_id = alliance_id,
                             defaults = {
-                                'alliance_name': alliance_api_result.get('name'),
-                                'alliance_ticker': alliance_api_result.get('ticker'),
-                                'executor_corp_id': alliance_api_result.get('executor_corporation_id')
+                                'alliance_name': alliance_api_result.name,
+                                'alliance_ticker': alliance_api_result.ticker,
+                                'executor_corp_id': alliance_api_result.executor_corporation_id
                             }
                          )
 
                         eve_corporation, created = EveCorporationInfo.objects.update_or_create(
                             corporation_id= registry.corporation_id,
                             defaults = {
-                                'corporation_name': corp_api_result.get('name'),
-                                'corporation_ticker': corp_api_result.get('ticker'),
-                                'member_count': corp_api_result.get('member_count'),
-                                'ceo_id': corp_api_result.get('ceo_id'),
+                                'corporation_name': corp_api_result.name,
+                                'corporation_ticker': corp_api_result.ticker,
+                                'member_count': corp_api_result.member_count,
+                                'ceo_id': corp_api_result.ceo_id,
                                 'alliance': eve_alliance
                             }
                          )  
