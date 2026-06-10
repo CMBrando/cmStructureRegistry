@@ -6,10 +6,12 @@ from datetime import datetime, timedelta, timezone
 import pytz
 import yaml
 
+from django.apps import apps
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import F, Window
 from django.db.models.functions import RowNumber
+from django.core.exceptions import AppRegistryNotReady
 
 from .models import TimerStructureType
 from .models import CorpTimer
@@ -24,22 +26,12 @@ from allianceauth.eveonline.models import EveCharacter
 from allianceauth.services.hooks import get_extension_logger
 from esi.models import Token
 
+logger = get_extension_logger(__name__)
 
-CORPTOOLS_DEP = False
-
-# Corp Tools (optional, only for friendly timer creations)
-try:
-    from corptools.models import Notification
-    from corptools.models import NotificationText
-    from eveuniverse.models import EveType
-    CORPTOOLS_DEP = True
-except ImportError:
-    CORPTOOLS_DEP = False
 
 from cmStructureRegistry import app_settings
 
 
-logger = get_extension_logger(__name__)
 
 ANSIBLEX_STRUCTURE_TYPE = 7
 POCO_STRUCTURE_TYPE = 18
@@ -55,13 +47,25 @@ TCU_TIMER = 7
 ENT_TIMER = 10
 
 
+def get_corptools_models():
+    try:
+        Notification = apps.get_model("corptools.Notification")
+        NotificationText = apps.get_model("corptools.NotificationText")
+        EveType = apps.get_model("eveuniverse.EveType")
+
+        return Notification, NotificationText, EveType
+    except (LookupError, AppRegistryNotReady):
+        return None, None, None
+
 
 @shared_task
 def notification_timer_task():
 
     try:
 
-        if CORPTOOLS_DEP:
+        Notification, NotificationText, EveType = get_corptools_models()
+
+        if all([Notification, NotificationText, EveType]):
 
             wanted_types = ["SovStructureReinforced", "OrbitalReinforced", "MercenaryDenReinforced", "SkyhookLostShields", "StructureLostShields", "StructureLostArmor"  ]
             cutoff = datetime.now(timezone.utc) - timedelta(days=3)
@@ -133,12 +137,12 @@ def notification_timer_task():
                                 solar_system = item["solarSystemID"]
 
                                 match = next(
-                                    (item for item in sov_structures if item.get("solar_system_id") == solar_system),
+                                    (item for item in sov_structures if item.solar_system_id == solar_system),
                                     None
                                 )
                             
                                 # if alliance owns sov then save as friendly
-                                if match and match.get('alliance_id') == char.alliance_id:
+                                if match and match.alliance_id == char.alliance_id:
 
                                     timer_datetime = filetime_to_date(item["decloakTime"])
 
@@ -168,7 +172,7 @@ def notification_timer_task():
                                 instance.system_id = item["solarSystemID"]
                                 instance.timer_type_id = ARMOR_TYPE
                                 instance.timer_datetime = timer_datetime
-                                instance.planet = planet_result["name"]
+                                instance.planet = planet_result.name if planet_result else ""
                                 instance.created_by_id = char.character_id
                                 instance.created_date = utc_now
                                 instance.hostility_type_id = 2  #  Friendly
@@ -197,7 +201,7 @@ def notification_timer_task():
                                 instance.system_id = item["solarsystemID"]
                                 instance.timer_type_id = ARMOR_TYPE
                                 instance.timer_datetime = timer_datetime
-                                instance.planet = planet_result["name"]
+                                instance.planet = planet_result.name if planet_result else ""
                                 instance.created_by_id = char.character_id
                                 instance.created_date = utc_now
                                 instance.hostility_type_id = 2  #  Friendly
@@ -228,10 +232,11 @@ def notification_timer_task():
                                 instance.system_id = item["solarsystemID"]
                                 instance.timer_type_id = ARMOR_TYPE
                                 instance.timer_datetime = timer_datetime
+                                instance.planet = planet_result.name if planet_result else "" 
                                 instance.created_by_id = char.character_id
                                 instance.created_date = utc_now
                                 instance.hostility_type_id = 2  #  Friendly
-                                instance.comment = structure["name"] if structure else ""
+                                instance.comment = structure.name if structure else ""
                                 instance.structure_type_id = SKYHOOK_STRUCTURE_TYPE
                                 instance.notification_id = notification.notification_id
                                 instance.save()      
@@ -277,7 +282,7 @@ def notification_timer_task():
                                     instance.created_by_id = char.character_id
                                     instance.created_date = utc_now
                                     instance.hostility_type_id = 2  #  Friendly
-                                    instance.comment = structure["name"] if structure else ""
+                                    instance.comment = structure.name if structure else ""
                                     instance.structure_type_id = timer_structure_type.id
                                     instance.notification_id = notification.notification_id
                                     instance.save()                  
