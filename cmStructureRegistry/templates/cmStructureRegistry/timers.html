@@ -54,6 +54,27 @@
                 </div>
             </transition>
         </div>
+        <div v-if="showStructureRemoveModal" @keydown.esc="closeModal" v-cloak>
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog" style="width: 400px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="modal-title">Confirm Remove</div>
+                                    <button type="button" class="close" v-on:click="closeModal()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <structure-remove :structure_id="curr_structure_id" :structure_name="curr_structure_name" v-on:structure-canceled="closeModal" v-on:structure-removed="structureRemoved" v-on:created="initModal"></structure-remove>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
         <div v-if="showFCModal" @keydown.esc="closeModal" v-cloak>
             <transition name="modal">
                 <div class="modal-mask">
@@ -97,7 +118,7 @@
             Recent Timers
         </div>
         <div>
-            <timer-component type="recent" :admin="isAdmin" :add="canAdd" :edit="canEdit" :addl-timer-perm="hasMorePerms" ref="recentTimer" v-on:add-timer="addTimer"></timer-component>
+            <timer-component type="recent" :admin="isAdmin" :add="canAdd" :edit="canEdit" :addl-timer-perm="hasMorePerms" :remove-structure="canRemoveStructure" ref="recentTimer" v-on:add-timer="addTimer" v-on:remove-structure="loadRemoveStructure"></timer-component>
         </div>
         <div class="spacer"></div>
         <div class="spacer"></div>
@@ -133,6 +154,7 @@
     {% include 'cmStructureRegistry/vue/autocomplete.html' %}
     {% include 'cmStructureRegistry/vue/timer-add-component.html' %}
     {% include 'cmStructureRegistry/vue/timer-delete-component.html' %}
+    {% include 'cmStructureRegistry/vue/structure-remove.html' %}
     {% include 'cmStructureRegistry/vue/timer-fc-component.html' %}
     {% include 'cmStructureRegistry/vue/timer-component.html' %}
 
@@ -152,6 +174,7 @@
     import TimerAdd from '/static/cmStructureRegistry/components/TimerAdd.js?v={{ CM_VERSION }}' 
     import TimerFC from '/static/cmStructureRegistry/components/TimerFC.js?v={{ CM_VERSION }}'      
     import TimerDelete from '/static/cmStructureRegistry/components/TimerDelete.js?v={{ CM_VERSION }}'       
+    import StructureRemove from '/static/cmStructureRegistry/components/StructureRemove.js?v={{ CM_VERSION }}'
 
     var _vue = createApp({
         el: '#vue-app',
@@ -159,15 +182,18 @@
             return {
                 showModal: false,
                 showDeleteConfirmation: false,
+                showStructureRemoveModal: false,
                 showFCModal: false,
                 token: document.querySelector('[name=csrfmiddlewaretoken]').value,
                 header: 'X-CSRFToken',
                 isAdmin: {{ perms.cmStructureRegistry.delete_timer|yesno:"true,false" }},
+                canRemoveStructure: {{ perms.cmStructureRegistry.delete_structure|yesno:"true,false" }},
                 canAdd: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
                 canEdit: {{ perms.cmStructureRegistry.manage_timers|yesno:"true,false" }},
                 hasMorePerms: {{ perms.cmStructureRegistry.skirmish_timer|yesno:"true,false" }} || {{ perms.cmStructureRegistry.tactical_timer|yesno:"true,false" }},
                 timerid: null,
                 curr_structure_id: null,
+                curr_structure_name: '',
                 curr_fc: '',
                 staging_system: null
             }
@@ -199,6 +225,16 @@
             deleteTimer: function (id) {
                 this.timerid = id;
                 this.showDeleteConfirmation = true;
+            },
+            loadRemoveStructure: function (id, name) {
+                this.curr_structure_id = id;
+                this.curr_structure_name = name;
+                this.showStructureRemoveModal = true;
+            },
+            structureRemoved: function () {
+                this.showStructureRemoveModal = false;
+                this.$refs.recentTimer.loadData();
+                this.$refs.openTimer.loadData();
             },
             timerDeleted: function () {
                 this.showDeleteConfirmation = false;
@@ -241,6 +277,7 @@
             closeModal: function() {
                 this.showModal =  false;
                 this.showDeleteConfirmation = false;
+                this.showStructureRemoveModal = false;
                 this.showFCModal =  false;
             },
             stagingSystemChanged: function(system) {
@@ -262,6 +299,7 @@
     _vue.component("timer-add-component", TimerAdd);
     _vue.component("timer-fc-component", TimerFC);    
     _vue.component("timer-delete-component", TimerDelete);                    
+    _vue.component("structure-remove", StructureRemove);
 
     _vue.mount('#vue-app');
 

@@ -33,7 +33,7 @@ export default {
             staging_system: this.stagingSystemId
         };
     },
-    props: ['type', 'admin', 'add', 'edit', 'addlTimerPerm', 'stagingSystemId'],
+    props: ['type', 'admin', 'add', 'edit', 'addlTimerPerm', 'stagingSystemId', 'removeStructure'],
     mounted: function () {
         this.loadData();
     },
@@ -143,6 +143,9 @@ export default {
         },
         confirmDelete: function (id) {
             this.$emit('delete-timer', id);
+        },
+        confirmRemoveStructure: function (timer) {
+            this.$emit('remove-structure', timer.structure_id, timer.structure_name);
         },
         setFleetCommander: function (id) {
 

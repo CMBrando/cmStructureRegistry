@@ -61,8 +61,12 @@ def corporation_lookup(corporation_name):
     result = esi.client.Universe.PostUniverseIds(body=[corporation_name]).results(use_etag=False)
     corporations = result[0].corporations if result else None
 
-    if corporations and len(corporations) == 1:
-        return corporations[0]
+    if corporations:
+        exact_matches = [corp for corp in corporations if corp.name.casefold() == corporation_name.casefold()]
+        if len(exact_matches) == 1:
+            return exact_matches[0]
+        if len(corporations) == 1:
+            return corporations[0]
 
     return None
 

@@ -271,6 +271,11 @@ def get_recent_timers(request):
 
     items = list(CorpTimerView.objects.filter(timer_datetime__range=[time_14_days_ago, time_60_minutes_ago]).values())
 
+    structure_ids = {item['structure_id'] for item in items if item['structure_id'] is not None}
+    linked_ids = set(StructureRegistry.objects.filter(pk__in=structure_ids).values_list('pk', flat=True))
+    for item in items:
+        item['structure_linked'] = item['structure_id'] in linked_ids
+
     return JsonResponse(items, safe=False)    
 
 

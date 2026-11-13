@@ -105,8 +105,11 @@
                 <div style="width:130px">
                     [[ timer.created_by ]]
                 </div>
-                <div class="detail-icon" v-show="(timer.structure_id != null)" width="20px">
+                <div class="detail-icon" v-show="timer.structure_id != null && (type !== 'recent' || timer.structure_linked)" width="20px">
                     <a :href="'../cmStructureRegistry/?sname=' + encodeURIComponent(timer.structure_name) + '&sid=' + timer.structure_id" target="_blank"><i class="fa fa-building" title="Go to Structure"></i></a>
+                </div>
+                <div class="detail-icon" v-if="type === 'recent' && removeStructure && timer.structure_linked" width="20px">
+                    <i class="fa fa-remove" title="Remove Structure" v-on:click="confirmRemoveStructure(timer)"></i>
                 </div>
                 <div class="detail-icon" v-show="type === 'recent' && add" width="50px">
                     <i class="fa fa-plus-circle" title="Add Timer" v-on:click="addTimer(timer.id)"></i>
